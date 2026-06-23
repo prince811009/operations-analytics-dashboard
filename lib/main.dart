@@ -1,4 +1,7 @@
+import 'dart:convert';
+
 import 'package:csv/csv.dart';
+import 'package:file_picker/file_picker.dart';
 import 'package:fl_chart/fl_chart.dart';
 import 'package:flutter/material.dart';
 
@@ -40,38 +43,37 @@ class HomePage extends StatefulWidget {
 class _HomePageState extends State<HomePage> {
   int selectedIndex = 0;
   List<SalesRecord> salesData = [];
+  String importStatus = 'No CSV uploaded yet.';
 
-  final String sampleCsv = '''
-month,sales
-2025-01,120000
-2025-02,135000
-2025-03,128000
-2025-04,150000
-2025-05,160000
-2025-06,172000
-2025-07,168000
-2025-08,181000
-''';
+  Future<void> uploadCsv() async {
+    final result = await FilePicker.platform.pickFiles(
+      type: FileType.custom,
+      allowedExtensions: ['csv'],
+      withData: true,
+    );
 
-void importSampleCsv() {
-  print('Import button clicked');
+    if (result == null || result.files.single.bytes == null) {
+      return;
+    }
 
-  setState(() {
-    salesData = [
-      SalesRecord(month: '2025-01', sales: 120000),
-      SalesRecord(month: '2025-02', sales: 135000),
-      SalesRecord(month: '2025-03', sales: 128000),
-      SalesRecord(month: '2025-04', sales: 150000),
-      SalesRecord(month: '2025-05', sales: 160000),
-      SalesRecord(month: '2025-06', sales: 172000),
-      SalesRecord(month: '2025-07', sales: 168000),
-      SalesRecord(month: '2025-08', sales: 181000),
-    ];
-  });
-}
+    final bytes = result.files.single.bytes!;
+    final csvString = utf8.decode(bytes);
+    final rows = const CsvToListConverter().convert(csvString);
 
-  double get totalSales =>
-      salesData.fold(0, (sum, item) => sum + item.sales);
+    final records = rows.skip(1).map((row) {
+      return SalesRecord(
+        month: row[0].toString(),
+        sales: double.parse(row[1].toString()),
+      );
+    }).toList();
+
+    setState(() {
+      salesData = records;
+      importStatus = 'Uploaded: ${result.files.single.name}';
+    });
+  }
+
+  double get totalSales => salesData.fold(0, (sum, item) => sum + item.sales);
 
   double get averageSales =>
       salesData.isEmpty ? 0 : totalSales / salesData.length;
@@ -92,7 +94,8 @@ void importSampleCsv() {
         averageSales: averageSales,
         forecastSales: forecastSales,
         formatMoney: formatMoney,
-        onImport: importSampleCsv,
+        onUpload: uploadCsv,
+        importStatus: importStatus,
       ),
       DataExplorerPage(
         salesData: salesData,
@@ -146,7 +149,8 @@ class DashboardPage extends StatelessWidget {
   final double averageSales;
   final double forecastSales;
   final String Function(double) formatMoney;
-  final VoidCallback onImport;
+  final VoidCallback onUpload;
+  final String importStatus;
 
   const DashboardPage({
     super.key,
@@ -155,7 +159,8 @@ class DashboardPage extends StatelessWidget {
     required this.averageSales,
     required this.forecastSales,
     required this.formatMoney,
-    required this.onImport,
+    required this.onUpload,
+    required this.importStatus,
   });
 
   @override
@@ -174,13 +179,16 @@ class DashboardPage extends StatelessWidget {
             ],
           ),
           const SizedBox(height: 20),
-          Align(
-            alignment: Alignment.centerLeft,
-            child: ElevatedButton.icon(
-              onPressed: onImport,
-              icon: const Icon(Icons.upload_file),
-              label: const Text('Import Sample CSV'),
-            ),
+          Row(
+            children: [
+              ElevatedButton.icon(
+                onPressed: onUpload,
+                icon: const Icon(Icons.upload_file),
+                label: const Text('Upload CSV'),
+              ),
+              const SizedBox(width: 16),
+              Text(importStatus),
+            ],
           ),
           const SizedBox(height: 20),
           Expanded(
@@ -194,7 +202,7 @@ class DashboardPage extends StatelessWidget {
               child: salesData.isEmpty
                   ? const Center(
                       child: Text(
-                        'No data imported yet.\nClick "Import Sample CSV" to load sales data.',
+                        'No data uploaded yet.\nUpload a CSV file with columns: month,sales',
                         textAlign: TextAlign.center,
                         style: TextStyle(fontSize: 18),
                       ),
@@ -246,10 +254,6 @@ class SalesLineChart extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
-    if (salesData.isEmpty) {
-      return const Center(child: Text('No chart data'));
-    }
-
     final spots = salesData.asMap().entries.map((entry) {
       return FlSpot(entry.key.toDouble(), entry.value.sales / 1000);
     }).toList();
@@ -319,7 +323,7 @@ class _DataExplorerPageState extends State<DataExplorerPage> {
           Expanded(
             child: widget.salesData.isEmpty
                 ? const Center(
-                    child: Text('Please import sample CSV data first.'),
+                    child: Text('Please upload CSV data first.'),
                   )
                 : SingleChildScrollView(
                     child: DataTable(
@@ -362,15 +366,12 @@ class ManagementReportPage extends StatelessWidget {
   Widget build(BuildContext context) {
     if (salesData.isEmpty) {
       return const Center(
-        child: Text('Please import sample CSV first.'),
+        child: Text('Please upload CSV first.'),
       );
     }
 
-    final bestMonth =
-        salesData.reduce((a, b) => a.sales > b.sales ? a : b);
-
-    final worstMonth =
-        salesData.reduce((a, b) => a.sales < b.sales ? a : b);
+    final bestMonth = salesData.reduce((a, b) => a.sales > b.sales ? a : b);
+    final worstMonth = salesData.reduce((a, b) => a.sales < b.sales ? a : b);
 
     return Padding(
       padding: const EdgeInsets.all(20),
@@ -384,29 +385,23 @@ class ManagementReportPage extends StatelessWidget {
             ),
           ),
           const SizedBox(height: 30),
-
           _buildItem(
             'Best Month',
             '${bestMonth.month} (${formatMoney(bestMonth.sales)})',
           ),
-
           _buildItem(
             'Worst Month',
             '${worstMonth.month} (${formatMoney(worstMonth.sales)})',
           ),
-
           _buildItem(
             'Average Sales',
             formatMoney(averageSales),
           ),
-
           _buildItem(
             'Forecast Next Month',
             formatMoney(forecastSales),
           ),
-
           const SizedBox(height: 30),
-
           const Text(
             'Recommendation',
             style: TextStyle(
@@ -414,9 +409,7 @@ class ManagementReportPage extends StatelessWidget {
               fontWeight: FontWeight.bold,
             ),
           ),
-
           const SizedBox(height: 12),
-
           Text(
             forecastSales > averageSales
                 ? 'Sales have shown a positive trend. Consider preparing inventory and operational resources to support continued growth.'

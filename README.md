@@ -1,17 +1,65 @@
-# sales_analytics_dashboard
+# Sales Analytics Dashboard
 
-A new Flutter project.
+A Flutter-based analytics dashboard that demonstrates how business data can be imported, analyzed, forecasted, and transformed into management reports.
 
-## Getting Started
+## Project Overview
 
-This project is a starting point for a Flutter application.
+This project was inspired by two areas of experience:
 
-A few resources to get you started if this is your first Flutter project:
+* My master's thesis on LSTM-based sales forecasting using Python and Keras
+* My experience building workflow digitization systems used by 3,600+ users across 20+ healthcare teams
 
-- [Learn Flutter](https://docs.flutter.dev/get-started/learn-flutter)
-- [Write your first Flutter app](https://docs.flutter.dev/get-started/codelab)
-- [Flutter learning resources](https://docs.flutter.dev/reference/learning-resources)
+The goal is to demonstrate how operational data can be transformed into meaningful business insights and decision-support information.
 
-For help getting started with Flutter development, view the
-[online documentation](https://docs.flutter.dev/), which offers tutorials,
-samples, guidance on mobile development, and a full API reference.
+## Features
+
+### Dashboard
+
+* Total Sales KPI
+* Average Sales KPI
+* Forecast KPI
+* Sales Trend Visualization
+
+### Data Explorer
+
+* Sales Data Table
+* Month-Based Search
+* Data Filtering
+
+### Management Report
+
+* Best Month Analysis
+* Worst Month Analysis
+* Forecast Summary
+* Business Recommendations
+
+## Tech Stack
+
+### Frontend
+
+* Flutter
+* Dart
+
+### Data Processing
+
+* CSV Import
+* Analytics Calculations
+* Forecast Simulation
+
+### Visualization
+
+* fl_chart
+
+## Future Improvements
+
+* SQLite Integration
+* SQL-Based Query Engine
+* Real CSV File Upload
+* LSTM Forecast API Integration
+* Export Reports to PDF
+
+## Why I Built This
+
+I wanted to combine my academic experience in forecasting models with my professional experience in workflow digitization and reporting systems.
+
+This project demonstrates how software can support operational visibility, reporting, and business decision-making.
