@@ -6,7 +6,7 @@ import '../models/forecast_result.dart';
 import '../models/sales_record.dart';
 
 class ForecastService {
-  static const String _baseUrl = 'http://127.0.0.1:8000';
+  static const String _baseUrl = 'https://operations-analytics-api.vercel.app';
 
   Future<ForecastResult> generateForecast(List<SalesRecord> records) async {
     if (records.length < 3) {
