@@ -41,9 +41,7 @@ class DashboardPage extends StatelessWidget {
                   const SizedBox(height: 28),
                   _buildKpiSection(constraints.maxWidth),
                   const SizedBox(height: 28),
-                  isCompact
-                      ? _buildCompactContent()
-                      : _buildDesktopContent(),
+                  isCompact ? _buildCompactContent() : _buildDesktopContent(),
                 ],
               ),
             );
@@ -54,10 +52,7 @@ class DashboardPage extends StatelessWidget {
   }
 
   double get _totalSales {
-    return salesData.fold<double>(
-      0,
-      (sum, item) => sum + item.sales,
-    );
+    return salesData.fold<double>(0, (sum, item) => sum + item.sales);
   }
 
   double get _averageSales {
@@ -111,16 +106,11 @@ class DashboardPage extends StatelessWidget {
                   ),
                 )
               : const Icon(Icons.upload_file_outlined),
-          label: Text(
-            isImporting ? 'Importing...' : 'Upload CSV',
-          ),
+          label: Text(isImporting ? 'Importing...' : 'Upload CSV'),
           style: ElevatedButton.styleFrom(
             backgroundColor: AppTheme.primary,
             foregroundColor: Colors.white,
-            padding: const EdgeInsets.symmetric(
-              horizontal: 18,
-              vertical: 15,
-            ),
+            padding: const EdgeInsets.symmetric(horizontal: 18, vertical: 15),
             shape: RoundedRectangleBorder(
               borderRadius: BorderRadius.circular(12),
             ),
@@ -167,18 +157,12 @@ class DashboardPage extends StatelessWidget {
             const SizedBox(height: 8),
             const Text(
               'Monitor operational performance and forecast trends.',
-              style: TextStyle(
-                fontSize: 16,
-                color: AppTheme.mutedText,
-              ),
+              style: TextStyle(fontSize: 16, color: AppTheme.mutedText),
             ),
           ],
         ),
         Container(
-          padding: const EdgeInsets.symmetric(
-            horizontal: 16,
-            vertical: 12,
-          ),
+          padding: const EdgeInsets.symmetric(horizontal: 16, vertical: 12),
           decoration: BoxDecoration(
             color: AppTheme.card,
             borderRadius: BorderRadius.circular(14),
@@ -187,11 +171,7 @@ class DashboardPage extends StatelessWidget {
           child: const Row(
             mainAxisSize: MainAxisSize.min,
             children: [
-              Icon(
-                Icons.schedule_outlined,
-                size: 18,
-                color: AppTheme.primary,
-              ),
+              Icon(Icons.schedule_outlined, size: 18, color: AppTheme.primary),
               SizedBox(width: 8),
               Text(
                 'Operational overview',
@@ -256,9 +236,7 @@ class DashboardPage extends StatelessWidget {
           child: KpiCard(
             title: 'Growth',
             value: growthText,
-            icon: _growthRate >= 0
-                ? Icons.trending_up
-                : Icons.trending_down,
+            icon: _growthRate >= 0 ? Icons.trending_up : Icons.trending_down,
           ),
         ),
       ],
@@ -269,10 +247,7 @@ class DashboardPage extends StatelessWidget {
     return Row(
       crossAxisAlignment: CrossAxisAlignment.start,
       children: [
-        Expanded(
-          flex: 7,
-          child: _buildSalesTrendCard(height: 520),
-        ),
+        Expanded(flex: 7, child: _buildSalesTrendCard(height: 520)),
         const SizedBox(width: 24),
         Expanded(
           flex: 3,
@@ -300,9 +275,7 @@ class DashboardPage extends StatelessWidget {
     );
   }
 
-  Widget _buildSalesTrendCard({
-    required double height,
-  }) {
+  Widget _buildSalesTrendCard({required double height}) {
     return _DashboardCard(
       child: SizedBox(
         height: height,
@@ -332,9 +305,7 @@ class DashboardPage extends StatelessWidget {
             const SizedBox(height: 8),
             const Text(
               'Monthly sales performance',
-              style: TextStyle(
-                color: AppTheme.mutedText,
-              ),
+              style: TextStyle(color: AppTheme.mutedText),
             ),
             const SizedBox(height: 30),
             Expanded(
@@ -344,10 +315,7 @@ class DashboardPage extends StatelessWidget {
                       message: 'Upload a CSV file to display the sales trend.',
                     )
                   : Padding(
-                      padding: const EdgeInsets.only(
-                        top: 8,
-                        right: 12,
-                      ),
+                      padding: const EdgeInsets.only(top: 8, right: 12),
                       child: LineChart(
                         _buildLineChartData(),
                         duration: const Duration(milliseconds: 300),
@@ -379,10 +347,7 @@ class DashboardPage extends StatelessWidget {
     final chartInterval = maxY == minY ? 1.0 : (maxY - minY) / 5;
 
     final spots = salesData.asMap().entries.map((entry) {
-      return FlSpot(
-        entry.key.toDouble(),
-        entry.value.sales,
-      );
+      return FlSpot(entry.key.toDouble(), entry.value.sales);
     }).toList();
 
     return LineChartData(
@@ -395,17 +360,12 @@ class DashboardPage extends StatelessWidget {
         drawVerticalLine: false,
         horizontalInterval: chartInterval,
         getDrawingHorizontalLine: (value) {
-          return const FlLine(
-            color: AppTheme.border,
-            strokeWidth: 1,
-          );
+          return const FlLine(color: AppTheme.border, strokeWidth: 1);
         },
       ),
       borderData: FlBorderData(show: false),
       titlesData: FlTitlesData(
-        topTitles: const AxisTitles(
-          sideTitles: SideTitles(showTitles: false),
-        ),
+        topTitles: const AxisTitles(sideTitles: SideTitles(showTitles: false)),
         rightTitles: const AxisTitles(
           sideTitles: SideTitles(showTitles: false),
         ),
@@ -519,9 +479,7 @@ class DashboardPage extends StatelessWidget {
           const SizedBox(height: 6),
           const Text(
             'Latest imported operational data',
-            style: TextStyle(
-              color: AppTheme.mutedText,
-            ),
+            style: TextStyle(color: AppTheme.mutedText),
           ),
           const SizedBox(height: 22),
           if (recentRecords.isEmpty)
@@ -532,8 +490,9 @@ class DashboardPage extends StatelessWidget {
           else
             ...recentRecords.asMap().entries.map((entry) {
               final record = entry.value;
-              final originalIndex =
-                  salesData.indexWhere((item) => identical(item, record));
+              final originalIndex = salesData.indexWhere(
+                (item) => identical(item, record),
+              );
 
               var changeText = '--';
 
@@ -593,8 +552,8 @@ class DashboardPage extends StatelessWidget {
                             color: changeText.startsWith('+')
                                 ? const Color(0xFF16A34A)
                                 : changeText.startsWith('-')
-                                    ? const Color(0xFFDC2626)
-                                    : AppTheme.mutedText,
+                                ? const Color(0xFFDC2626)
+                                : AppTheme.mutedText,
                             fontSize: 12,
                             fontWeight: FontWeight.w600,
                           ),
@@ -619,10 +578,7 @@ class DashboardPage extends StatelessWidget {
         children: [
           const Row(
             children: [
-              Icon(
-                Icons.auto_awesome_outlined,
-                color: AppTheme.primary,
-              ),
+              Icon(Icons.auto_awesome_outlined, color: AppTheme.primary),
               SizedBox(width: 10),
               Expanded(
                 child: Text(
@@ -646,9 +602,7 @@ class DashboardPage extends StatelessWidget {
             ),
           ),
           const SizedBox(height: 18),
-          const _RecommendationItem(
-            text: 'Review the latest operational data',
-          ),
+          const _RecommendationItem(text: 'Review the latest operational data'),
           const SizedBox(height: 12),
           const _RecommendationItem(
             text: 'Monitor monthly performance changes',
@@ -682,28 +636,19 @@ class DashboardPage extends StatelessWidget {
         'Continue monitoring monthly trends and operational efficiency.';
   }
 
-  Widget _buildEmptyState({
-    required IconData icon,
-    required String message,
-  }) {
+  Widget _buildEmptyState({required IconData icon, required String message}) {
     return Center(
       child: Padding(
         padding: const EdgeInsets.symmetric(vertical: 28),
         child: Column(
           mainAxisSize: MainAxisSize.min,
           children: [
-            Icon(
-              icon,
-              size: 48,
-              color: AppTheme.mutedText,
-            ),
+            Icon(icon, size: 48, color: AppTheme.mutedText),
             const SizedBox(height: 12),
             Text(
               message,
               textAlign: TextAlign.center,
-              style: const TextStyle(
-                color: AppTheme.mutedText,
-              ),
+              style: const TextStyle(color: AppTheme.mutedText),
             ),
           ],
         ),
@@ -715,9 +660,7 @@ class DashboardPage extends StatelessWidget {
 class _DashboardCard extends StatelessWidget {
   final Widget child;
 
-  const _DashboardCard({
-    required this.child,
-  });
+  const _DashboardCard({required this.child});
 
   @override
   Widget build(BuildContext context) {
@@ -745,18 +688,12 @@ class _StatusBadge extends StatelessWidget {
   final String label;
   final IconData icon;
 
-  const _StatusBadge({
-    required this.label,
-    required this.icon,
-  });
+  const _StatusBadge({required this.label, required this.icon});
 
   @override
   Widget build(BuildContext context) {
     return Container(
-      padding: const EdgeInsets.symmetric(
-        horizontal: 12,
-        vertical: 8,
-      ),
+      padding: const EdgeInsets.symmetric(horizontal: 12, vertical: 8),
       decoration: BoxDecoration(
         color: const Color(0xFFEFF6FF),
         borderRadius: BorderRadius.circular(20),
@@ -764,11 +701,7 @@ class _StatusBadge extends StatelessWidget {
       child: Row(
         mainAxisSize: MainAxisSize.min,
         children: [
-          Icon(
-            icon,
-            size: 15,
-            color: AppTheme.primary,
-          ),
+          Icon(icon, size: 15, color: AppTheme.primary),
           const SizedBox(width: 7),
           Text(
             label,
@@ -787,9 +720,7 @@ class _StatusBadge extends StatelessWidget {
 class _RecommendationItem extends StatelessWidget {
   final String text;
 
-  const _RecommendationItem({
-    required this.text,
-  });
+  const _RecommendationItem({required this.text});
 
   @override
   Widget build(BuildContext context) {
@@ -804,20 +735,13 @@ class _RecommendationItem extends StatelessWidget {
             color: Color(0xFFECFDF3),
             shape: BoxShape.circle,
           ),
-          child: const Icon(
-            Icons.check,
-            size: 14,
-            color: Color(0xFF16A34A),
-          ),
+          child: const Icon(Icons.check, size: 14, color: Color(0xFF16A34A)),
         ),
         const SizedBox(width: 10),
         Expanded(
           child: Text(
             text,
-            style: const TextStyle(
-              height: 1.4,
-              color: AppTheme.text,
-            ),
+            style: const TextStyle(height: 1.4, color: AppTheme.text),
           ),
         ),
       ],

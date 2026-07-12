@@ -72,18 +72,10 @@ class _AppShellState extends State<AppShell> {
         isImporting: isImporting,
         onImportCsv: importCsv,
       ),
-      DataExplorerPage(
-        salesData: salesData,
-      ),
-      SqlQueryPage(
-        salesData: salesData,
-      ),
-      ForecastPage(
-        salesData: salesData,
-      ),
-      ReportPage(
-        salesData: salesData,
-      ),
+      DataExplorerPage(salesData: salesData),
+      SqlQueryPage(salesData: salesData),
+      ForecastPage(salesData: salesData),
+      ReportPage(salesData: salesData),
     ];
 
     return Scaffold(
@@ -103,9 +95,7 @@ class _AppShellState extends State<AppShell> {
               });
             },
           ),
-          Expanded(
-            child: pages[selectedIndex],
-          ),
+          Expanded(child: pages[selectedIndex]),
         ],
       ),
     );

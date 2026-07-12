@@ -40,12 +40,8 @@ class CsvService {
         .map((value) => value.toString().trim().toLowerCase())
         .toList();
 
-    if (header.length < 2 ||
-        header[0] != 'month' ||
-        header[1] != 'sales') {
-      throw const FormatException(
-        'CSV columns must be: month,sales',
-      );
+    if (header.length < 2 || header[0] != 'month' || header[1] != 'sales') {
+      throw const FormatException('CSV columns must be: month,sales');
     }
 
     final records = <SalesRecord>[];
@@ -62,10 +58,7 @@ class CsvService {
       throw const FormatException('No valid sales records were found.');
     }
 
-    return CsvImportResult(
-      fileName: file.name,
-      records: records,
-    );
+    return CsvImportResult(fileName: file.name, records: records);
   }
 }
 
@@ -73,8 +66,5 @@ class CsvImportResult {
   final String fileName;
   final List<SalesRecord> records;
 
-  const CsvImportResult({
-    required this.fileName,
-    required this.records,
-  });
+  const CsvImportResult({required this.fileName, required this.records});
 }

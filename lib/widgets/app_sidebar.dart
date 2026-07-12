@@ -26,8 +26,9 @@ class AppSidebar extends StatelessWidget {
         vertical: 24,
       ),
       child: Column(
-        crossAxisAlignment:
-            isCollapsed ? CrossAxisAlignment.center : CrossAxisAlignment.start,
+        crossAxisAlignment: isCollapsed
+            ? CrossAxisAlignment.center
+            : CrossAxisAlignment.start,
         children: [
           Row(
             mainAxisAlignment: isCollapsed
@@ -37,10 +38,7 @@ class AppSidebar extends StatelessWidget {
               if (!isCollapsed)
                 const Text(
                   'Operations',
-                  style: TextStyle(
-                    fontSize: 28,
-                    fontWeight: FontWeight.bold,
-                  ),
+                  style: TextStyle(fontSize: 28, fontWeight: FontWeight.bold),
                 ),
               IconButton(
                 tooltip: isCollapsed ? 'Expand sidebar' : 'Collapse sidebar',
@@ -54,39 +52,20 @@ class AppSidebar extends StatelessWidget {
             ],
           ),
           const SizedBox(height: 32),
-          _menu(
-            index: 0,
-            icon: Icons.dashboard_outlined,
-            title: 'Dashboard',
-          ),
+          _menu(index: 0, icon: Icons.dashboard_outlined, title: 'Dashboard'),
           _menu(
             index: 1,
             icon: Icons.table_chart_outlined,
             title: 'Data Explorer',
           ),
-          _menu(
-            index: 2,
-            icon: Icons.storage_outlined,
-            title: 'SQL Query',
-          ),
-          _menu(
-            index: 3,
-            icon: Icons.show_chart,
-            title: 'Forecast',
-          ),
-          _menu(
-            index: 4,
-            icon: Icons.description_outlined,
-            title: 'Reports',
-          ),
+          _menu(index: 2, icon: Icons.storage_outlined, title: 'SQL Query'),
+          _menu(index: 3, icon: Icons.show_chart, title: 'Forecast'),
+          _menu(index: 4, icon: Icons.description_outlined, title: 'Reports'),
           const Spacer(),
           if (!isCollapsed)
             const Text(
               'Operations Analytics',
-              style: TextStyle(
-                fontSize: 12,
-                color: Colors.black45,
-              ),
+              style: TextStyle(fontSize: 12, color: Colors.black45),
             ),
         ],
       ),
@@ -113,9 +92,7 @@ class AppSidebar extends StatelessWidget {
             vertical: 14,
           ),
           decoration: BoxDecoration(
-            color: isSelected
-                ? const Color(0xFFEFF6FF)
-                : Colors.transparent,
+            color: isSelected ? const Color(0xFFEFF6FF) : Colors.transparent,
             borderRadius: BorderRadius.circular(14),
           ),
           child: Row(
@@ -125,9 +102,7 @@ class AppSidebar extends StatelessWidget {
             children: [
               Icon(
                 icon,
-                color: isSelected
-                    ? const Color(0xFF2563EB)
-                    : Colors.black54,
+                color: isSelected ? const Color(0xFF2563EB) : Colors.black54,
               ),
               if (!isCollapsed) ...[
                 const SizedBox(width: 12),
@@ -136,8 +111,9 @@ class AppSidebar extends StatelessWidget {
                     title,
                     style: TextStyle(
                       fontSize: 16,
-                      fontWeight:
-                          isSelected ? FontWeight.bold : FontWeight.normal,
+                      fontWeight: isSelected
+                          ? FontWeight.bold
+                          : FontWeight.normal,
                       color: isSelected
                           ? const Color(0xFF2563EB)
                           : Colors.black87,

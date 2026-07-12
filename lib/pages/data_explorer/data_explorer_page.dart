@@ -1,5 +1,5 @@
 import 'dart:convert';
-import 'dart:html' as html;
+import 'package:universal_html/html.dart' as html;
 
 import 'package:flutter/material.dart';
 
@@ -9,10 +9,7 @@ import '../../theme/app_theme.dart';
 class DataExplorerPage extends StatefulWidget {
   final List<SalesRecord> salesData;
 
-  const DataExplorerPage({
-    super.key,
-    required this.salesData,
-  });
+  const DataExplorerPage({super.key, required this.salesData});
 
   @override
   State<DataExplorerPage> createState() => _DataExplorerPageState();
@@ -20,8 +17,7 @@ class DataExplorerPage extends StatefulWidget {
 
 class _DataExplorerPageState extends State<DataExplorerPage> {
   final TextEditingController _searchController = TextEditingController();
-  final TextEditingController _minimumSalesController =
-      TextEditingController();
+  final TextEditingController _minimumSalesController = TextEditingController();
 
   bool _sortAscending = true;
 
@@ -34,8 +30,7 @@ class _DataExplorerPageState extends State<DataExplorerPage> {
 
   List<SalesRecord> get _filteredRecords {
     final keyword = _searchController.text.trim().toLowerCase();
-    final minimumSales =
-        double.tryParse(_minimumSalesController.text.trim());
+    final minimumSales = double.tryParse(_minimumSalesController.text.trim());
 
     final records = widget.salesData.where((record) {
       final matchesKeyword =
@@ -87,10 +82,12 @@ class _DataExplorerPageState extends State<DataExplorerPage> {
     }
 
     final bytes = utf8.encode(csvBuffer.toString());
+
     final blob = html.Blob([bytes], 'text/csv;charset=utf-8');
+
     final url = html.Url.createObjectUrlFromBlob(blob);
 
-    final anchor = html.AnchorElement(href: url)
+    html.AnchorElement(href: url)
       ..setAttribute('download', 'filtered_sales_data.csv')
       ..click();
 
@@ -124,10 +121,7 @@ class _DataExplorerPageState extends State<DataExplorerPage> {
                   const SizedBox(height: 8),
                   const Text(
                     'Search, filter, sort, and export imported operational data.',
-                    style: TextStyle(
-                      fontSize: 16,
-                      color: AppTheme.mutedText,
-                    ),
+                    style: TextStyle(fontSize: 16, color: AppTheme.mutedText),
                   ),
                   const SizedBox(height: 28),
                   _buildFilterBar(isCompact),
@@ -159,15 +153,11 @@ class _DataExplorerPageState extends State<DataExplorerPage> {
             fillColor: AppTheme.card,
             border: OutlineInputBorder(
               borderRadius: BorderRadius.circular(14),
-              borderSide: const BorderSide(
-                color: AppTheme.border,
-              ),
+              borderSide: const BorderSide(color: AppTheme.border),
             ),
             enabledBorder: OutlineInputBorder(
               borderRadius: BorderRadius.circular(14),
-              borderSide: const BorderSide(
-                color: AppTheme.border,
-              ),
+              borderSide: const BorderSide(color: AppTheme.border),
             ),
           ),
         ),
@@ -186,15 +176,11 @@ class _DataExplorerPageState extends State<DataExplorerPage> {
             fillColor: AppTheme.card,
             border: OutlineInputBorder(
               borderRadius: BorderRadius.circular(14),
-              borderSide: const BorderSide(
-                color: AppTheme.border,
-              ),
+              borderSide: const BorderSide(color: AppTheme.border),
             ),
             enabledBorder: OutlineInputBorder(
               borderRadius: BorderRadius.circular(14),
-              borderSide: const BorderSide(
-                color: AppTheme.border,
-              ),
+              borderSide: const BorderSide(color: AppTheme.border),
             ),
           ),
         ),
@@ -205,21 +191,12 @@ class _DataExplorerPageState extends State<DataExplorerPage> {
             _sortAscending = !_sortAscending;
           });
         },
-        icon: Icon(
-          _sortAscending
-              ? Icons.arrow_upward
-              : Icons.arrow_downward,
-        ),
+        icon: Icon(_sortAscending ? Icons.arrow_upward : Icons.arrow_downward),
         label: Text(
-          _sortAscending
-              ? 'Sales: Low to High'
-              : 'Sales: High to Low',
+          _sortAscending ? 'Sales: Low to High' : 'Sales: High to Low',
         ),
         style: OutlinedButton.styleFrom(
-          padding: const EdgeInsets.symmetric(
-            horizontal: 18,
-            vertical: 16,
-          ),
+          padding: const EdgeInsets.symmetric(horizontal: 18, vertical: 16),
           shape: RoundedRectangleBorder(
             borderRadius: BorderRadius.circular(12),
           ),
@@ -232,10 +209,7 @@ class _DataExplorerPageState extends State<DataExplorerPage> {
         style: ElevatedButton.styleFrom(
           backgroundColor: AppTheme.primary,
           foregroundColor: Colors.white,
-          padding: const EdgeInsets.symmetric(
-            horizontal: 18,
-            vertical: 16,
-          ),
+          padding: const EdgeInsets.symmetric(horizontal: 18, vertical: 16),
           shape: RoundedRectangleBorder(
             borderRadius: BorderRadius.circular(12),
           ),
@@ -247,10 +221,7 @@ class _DataExplorerPageState extends State<DataExplorerPage> {
       return Column(
         crossAxisAlignment: CrossAxisAlignment.stretch,
         children: [
-          for (final field in fields) ...[
-            field,
-            const SizedBox(height: 12),
-          ],
+          for (final field in fields) ...[field, const SizedBox(height: 12)],
         ],
       );
     }
@@ -269,27 +240,20 @@ class _DataExplorerPageState extends State<DataExplorerPage> {
       (sum, record) => sum + record.sales,
     );
 
-    final averageSales =
-        records.isEmpty ? 0 : totalSales / records.length;
+    final averageSales = records.isEmpty ? 0 : totalSales / records.length;
 
     final maximumSales = records.isEmpty
         ? 0
         : records
-            .map((record) => record.sales)
-            .reduce((first, second) => first > second ? first : second);
+              .map((record) => record.sales)
+              .reduce((first, second) => first > second ? first : second);
 
     return Wrap(
       spacing: 16,
       runSpacing: 16,
       children: [
-        _SummaryCard(
-          title: 'Rows',
-          value: records.length.toString(),
-        ),
-        _SummaryCard(
-          title: 'Total Sales',
-          value: _formatNumber(totalSales),
-        ),
+        _SummaryCard(title: 'Rows', value: records.length.toString()),
+        _SummaryCard(title: 'Total Sales', value: _formatNumber(totalSales)),
         _SummaryCard(
           title: 'Average Sales',
           value: _formatNumber(averageSales.toDouble()),
@@ -324,13 +288,9 @@ class _DataExplorerPageState extends State<DataExplorerPage> {
           ),
           const SizedBox(height: 18),
           if (widget.salesData.isEmpty)
-            const _EmptyState(
-              message: 'Upload a CSV file to explore data.',
-            )
+            const _EmptyState(message: 'Upload a CSV file to explore data.')
           else if (records.isEmpty)
-            const _EmptyState(
-              message: 'No records match the current filters.',
-            )
+            const _EmptyState(message: 'No records match the current filters.')
           else
             SingleChildScrollView(
               scrollDirection: Axis.horizontal,
@@ -342,17 +302,13 @@ class _DataExplorerPageState extends State<DataExplorerPage> {
                   DataColumn(
                     label: Text(
                       'Month',
-                      style: TextStyle(
-                        fontWeight: FontWeight.w700,
-                      ),
+                      style: TextStyle(fontWeight: FontWeight.w700),
                     ),
                   ),
                   DataColumn(
                     label: Text(
                       'Sales',
-                      style: TextStyle(
-                        fontWeight: FontWeight.w700,
-                      ),
+                      style: TextStyle(fontWeight: FontWeight.w700),
                     ),
                   ),
                 ],
@@ -360,9 +316,7 @@ class _DataExplorerPageState extends State<DataExplorerPage> {
                   return DataRow(
                     cells: [
                       DataCell(Text(record.month)),
-                      DataCell(
-                        Text(_formatNumber(record.sales)),
-                      ),
+                      DataCell(Text(_formatNumber(record.sales))),
                     ],
                   );
                 }).toList(),
@@ -378,10 +332,7 @@ class _SummaryCard extends StatelessWidget {
   final String title;
   final String value;
 
-  const _SummaryCard({
-    required this.title,
-    required this.value,
-  });
+  const _SummaryCard({required this.title, required this.value});
 
   @override
   Widget build(BuildContext context) {
@@ -396,12 +347,7 @@ class _SummaryCard extends StatelessWidget {
       child: Column(
         crossAxisAlignment: CrossAxisAlignment.start,
         children: [
-          Text(
-            title,
-            style: const TextStyle(
-              color: AppTheme.mutedText,
-            ),
-          ),
+          Text(title, style: const TextStyle(color: AppTheme.mutedText)),
           const SizedBox(height: 8),
           Text(
             value,
@@ -420,9 +366,7 @@ class _SummaryCard extends StatelessWidget {
 class _EmptyState extends StatelessWidget {
   final String message;
 
-  const _EmptyState({
-    required this.message,
-  });
+  const _EmptyState({required this.message});
 
   @override
   Widget build(BuildContext context) {
@@ -438,12 +382,7 @@ class _EmptyState extends StatelessWidget {
             color: AppTheme.mutedText,
           ),
           const SizedBox(height: 14),
-          Text(
-            message,
-            style: const TextStyle(
-              color: AppTheme.mutedText,
-            ),
-          ),
+          Text(message, style: const TextStyle(color: AppTheme.mutedText)),
         ],
       ),
     );

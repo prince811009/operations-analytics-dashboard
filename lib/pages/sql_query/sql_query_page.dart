@@ -7,10 +7,7 @@ import '../../theme/app_theme.dart';
 class SqlQueryPage extends StatefulWidget {
   final List<SalesRecord> salesData;
 
-  const SqlQueryPage({
-    super.key,
-    required this.salesData,
-  });
+  const SqlQueryPage({super.key, required this.salesData});
 
   @override
   State<SqlQueryPage> createState() => _SqlQueryPageState();
@@ -53,8 +50,7 @@ ORDER BY sales DESC;
     });
 
     try {
-      final results =
-          await DatabaseHelper.instance.runSelectQuery(sql);
+      final results = await DatabaseHelper.instance.runSelectQuery(sql);
 
       if (!mounted) return;
 
@@ -120,10 +116,7 @@ ORDER BY sales DESC;
                   const SizedBox(height: 8),
                   const Text(
                     'Run read-only SQL queries against imported sales data.',
-                    style: TextStyle(
-                      fontSize: 16,
-                      color: AppTheme.mutedText,
-                    ),
+                    style: TextStyle(fontSize: 16, color: AppTheme.mutedText),
                   ),
                   const SizedBox(height: 28),
                   _buildQueryEditor(),
@@ -176,9 +169,7 @@ ORDER BY sales DESC;
               filled: true,
               fillColor: const Color(0xFF0F172A),
               hintText: 'Enter a SELECT query...',
-              hintStyle: const TextStyle(
-                color: Color(0xFF94A3B8),
-              ),
+              hintStyle: const TextStyle(color: Color(0xFF94A3B8)),
               contentPadding: const EdgeInsets.all(20),
               border: OutlineInputBorder(
                 borderRadius: BorderRadius.circular(14),
@@ -201,9 +192,7 @@ ORDER BY sales DESC;
                         ),
                       )
                     : const Icon(Icons.play_arrow),
-                label: Text(
-                  _isRunning ? 'Running...' : 'Run Query',
-                ),
+                label: Text(_isRunning ? 'Running...' : 'Run Query'),
                 style: ElevatedButton.styleFrom(
                   backgroundColor: AppTheme.primary,
                   foregroundColor: Colors.white,
@@ -219,9 +208,7 @@ ORDER BY sales DESC;
               const SizedBox(width: 14),
               Text(
                 '${widget.salesData.length} imported records',
-                style: const TextStyle(
-                  color: AppTheme.mutedText,
-                ),
+                style: const TextStyle(color: AppTheme.mutedText),
               ),
             ],
           ),
@@ -288,16 +275,11 @@ LIMIT 3;
       decoration: BoxDecoration(
         color: const Color(0xFFFEF2F2),
         borderRadius: BorderRadius.circular(12),
-        border: Border.all(
-          color: const Color(0xFFFECACA),
-        ),
+        border: Border.all(color: const Color(0xFFFECACA)),
       ),
       child: Row(
         children: [
-          const Icon(
-            Icons.error_outline,
-            color: Color(0xFFDC2626),
-          ),
+          const Icon(Icons.error_outline, color: Color(0xFFDC2626)),
           const SizedBox(width: 12),
           Expanded(
             child: Text(
@@ -340,21 +322,15 @@ LIMIT 3;
               if (_hasRunQuery)
                 Text(
                   '${_queryResults.length} rows',
-                  style: const TextStyle(
-                    color: AppTheme.mutedText,
-                  ),
+                  style: const TextStyle(color: AppTheme.mutedText),
                 ),
             ],
           ),
           const SizedBox(height: 18),
           if (!_hasRunQuery)
-            const _EmptyResult(
-              message: 'Run a SELECT query to view results.',
-            )
+            const _EmptyResult(message: 'Run a SELECT query to view results.')
           else if (_queryResults.isEmpty && _errorMessage == null)
-            const _EmptyResult(
-              message: 'The query returned no records.',
-            )
+            const _EmptyResult(message: 'The query returned no records.')
           else if (_queryResults.isNotEmpty)
             _buildResultTable(),
         ],
@@ -368,9 +344,7 @@ LIMIT 3;
     return SingleChildScrollView(
       scrollDirection: Axis.horizontal,
       child: DataTable(
-        headingRowColor: WidgetStateProperty.all(
-          const Color(0xFFF8FAFC),
-        ),
+        headingRowColor: WidgetStateProperty.all(const Color(0xFFF8FAFC)),
         columns: columns.map((column) {
           return DataColumn(
             label: Text(
@@ -390,9 +364,7 @@ LIMIT 3;
               return DataCell(
                 Text(
                   value?.toString() ?? 'NULL',
-                  style: const TextStyle(
-                    color: AppTheme.text,
-                  ),
+                  style: const TextStyle(color: AppTheme.text),
                 ),
               );
             }).toList(),
@@ -406,9 +378,7 @@ LIMIT 3;
 class _EmptyResult extends StatelessWidget {
   final String message;
 
-  const _EmptyResult({
-    required this.message,
-  });
+  const _EmptyResult({required this.message});
 
   @override
   Widget build(BuildContext context) {
@@ -424,12 +394,7 @@ class _EmptyResult extends StatelessWidget {
             color: AppTheme.mutedText,
           ),
           const SizedBox(height: 12),
-          Text(
-            message,
-            style: const TextStyle(
-              color: AppTheme.mutedText,
-            ),
-          ),
+          Text(message, style: const TextStyle(color: AppTheme.mutedText)),
         ],
       ),
     );

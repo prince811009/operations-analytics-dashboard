@@ -2,10 +2,7 @@ class SalesRecord {
   final String month;
   final double sales;
 
-  const SalesRecord({
-    required this.month,
-    required this.sales,
-  });
+  const SalesRecord({required this.month, required this.sales});
 
   factory SalesRecord.fromCsvRow(List<dynamic> row) {
     if (row.length < 2) {
@@ -19,9 +16,6 @@ class SalesRecord {
       throw FormatException('Invalid CSV row: $row');
     }
 
-    return SalesRecord(
-      month: month,
-      sales: sales,
-    );
+    return SalesRecord(month: month, sales: sales);
   }
 }

@@ -27,12 +27,9 @@ class ForecastResult {
     return ForecastResult(
       model: json['model']?.toString() ?? 'Unknown',
       forecastMonth: json['forecast_month']?.toString() ?? 'Next Period',
-      forecastSales:
-          (json['forecast_sales'] as num?)?.toDouble() ?? 0,
-      latestSales:
-          (json['latest_sales'] as num?)?.toDouble() ?? 0,
-      growthRatePercent:
-          (json['growth_rate_percent'] as num?)?.toDouble() ?? 0,
+      forecastSales: (json['forecast_sales'] as num?)?.toDouble() ?? 0,
+      latestSales: (json['latest_sales'] as num?)?.toDouble() ?? 0,
+      growthRatePercent: (json['growth_rate_percent'] as num?)?.toDouble() ?? 0,
       trend: json['trend']?.toString() ?? 'unknown',
       mae: (json['mae'] as num?)?.toDouble() ?? 0,
       rmse: (json['rmse'] as num?)?.toDouble() ?? 0,
@@ -53,14 +50,9 @@ class ForecastHistoryItem {
   final String month;
   final double sales;
 
-  const ForecastHistoryItem({
-    required this.month,
-    required this.sales,
-  });
+  const ForecastHistoryItem({required this.month, required this.sales});
 
-  factory ForecastHistoryItem.fromJson(
-    Map<String, dynamic> json,
-  ) {
+  factory ForecastHistoryItem.fromJson(Map<String, dynamic> json) {
     return ForecastHistoryItem(
       month: json['month']?.toString() ?? '',
       sales: (json['sales'] as num?)?.toDouble() ?? 0,

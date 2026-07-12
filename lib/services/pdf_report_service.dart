@@ -5,13 +5,9 @@ import 'package:printing/printing.dart';
 import '../models/sales_record.dart';
 
 class PdfReportService {
-  Future<void> exportManagementReport(
-    List<SalesRecord> salesData,
-  ) async {
+  Future<void> exportManagementReport(List<SalesRecord> salesData) async {
     if (salesData.isEmpty) {
-      throw const FormatException(
-        'No sales data is available for the report.',
-      );
+      throw const FormatException('No sales data is available for the report.');
     }
 
     final document = pw.Document();
@@ -24,20 +20,16 @@ class PdfReportService {
     final averageSales = totalSales / salesData.length;
 
     final bestMonth = salesData.reduce(
-      (first, second) =>
-          first.sales >= second.sales ? first : second,
+      (first, second) => first.sales >= second.sales ? first : second,
     );
 
     final worstMonth = salesData.reduce(
-      (first, second) =>
-          first.sales <= second.sales ? first : second,
+      (first, second) => first.sales <= second.sales ? first : second,
     );
 
     final growthRate = _calculateGrowthRate(salesData);
     final forecastSales = _calculateForecast(salesData);
-    final recommendation = _buildRecommendation(
-      growthRate,
-    );
+    final recommendation = _buildRecommendation(growthRate);
 
     document.addPage(
       pw.MultiPage(
@@ -46,29 +38,18 @@ class PdfReportService {
         header: (context) => pw.Container(
           padding: const pw.EdgeInsets.only(bottom: 12),
           decoration: const pw.BoxDecoration(
-            border: pw.Border(
-              bottom: pw.BorderSide(
-                color: PdfColors.grey300,
-              ),
-            ),
+            border: pw.Border(bottom: pw.BorderSide(color: PdfColors.grey300)),
           ),
           child: pw.Row(
-            mainAxisAlignment:
-                pw.MainAxisAlignment.spaceBetween,
+            mainAxisAlignment: pw.MainAxisAlignment.spaceBetween,
             children: [
               pw.Text(
                 'Operations Analytics Platform',
-                style: pw.TextStyle(
-                  fontSize: 11,
-                  color: PdfColors.grey700,
-                ),
+                style: pw.TextStyle(fontSize: 11, color: PdfColors.grey700),
               ),
               pw.Text(
                 'Management Report',
-                style: pw.TextStyle(
-                  fontSize: 11,
-                  color: PdfColors.grey700,
-                ),
+                style: pw.TextStyle(fontSize: 11, color: PdfColors.grey700),
               ),
             ],
           ),
@@ -76,29 +57,18 @@ class PdfReportService {
         footer: (context) => pw.Container(
           padding: const pw.EdgeInsets.only(top: 12),
           decoration: const pw.BoxDecoration(
-            border: pw.Border(
-              top: pw.BorderSide(
-                color: PdfColors.grey300,
-              ),
-            ),
+            border: pw.Border(top: pw.BorderSide(color: PdfColors.grey300)),
           ),
           child: pw.Row(
-            mainAxisAlignment:
-                pw.MainAxisAlignment.spaceBetween,
+            mainAxisAlignment: pw.MainAxisAlignment.spaceBetween,
             children: [
               pw.Text(
                 'Generated from imported CSV data',
-                style: pw.TextStyle(
-                  fontSize: 9,
-                  color: PdfColors.grey600,
-                ),
+                style: pw.TextStyle(fontSize: 9, color: PdfColors.grey600),
               ),
               pw.Text(
                 'Page ${context.pageNumber} of ${context.pagesCount}',
-                style: pw.TextStyle(
-                  fontSize: 9,
-                  color: PdfColors.grey600,
-                ),
+                style: pw.TextStyle(fontSize: 9, color: PdfColors.grey600),
               ),
             ],
           ),
@@ -117,10 +87,7 @@ class PdfReportService {
           pw.Text(
             'Operational performance summary generated from '
             '${salesData.length} imported records.',
-            style: const pw.TextStyle(
-              fontSize: 11,
-              color: PdfColors.grey700,
-            ),
+            style: const pw.TextStyle(fontSize: 11, color: PdfColors.grey700),
           ),
           pw.SizedBox(height: 26),
           pw.Wrap(
@@ -150,10 +117,7 @@ class PdfReportService {
           _buildSectionTitle('Performance Summary'),
           pw.SizedBox(height: 12),
           pw.Table(
-            border: pw.TableBorder.all(
-              color: PdfColors.grey300,
-              width: 0.7,
-            ),
+            border: pw.TableBorder.all(color: PdfColors.grey300, width: 0.7),
             columnWidths: const {
               0: pw.FlexColumnWidth(2),
               1: pw.FlexColumnWidth(2),
@@ -191,13 +155,8 @@ class PdfReportService {
             padding: const pw.EdgeInsets.all(16),
             decoration: pw.BoxDecoration(
               color: PdfColors.blue50,
-              borderRadius:
-                  const pw.BorderRadius.all(
-                pw.Radius.circular(8),
-              ),
-              border: pw.Border.all(
-                color: PdfColors.blue100,
-              ),
+              borderRadius: const pw.BorderRadius.all(pw.Radius.circular(8)),
+              border: pw.Border.all(color: PdfColors.blue100),
             ),
             child: pw.Text(
               recommendation,
@@ -212,11 +171,7 @@ class PdfReportService {
           _buildSectionTitle('Monthly Performance'),
           pw.SizedBox(height: 12),
           pw.TableHelper.fromTextArray(
-            headers: const [
-              'Month',
-              'Sales',
-              'Change',
-            ],
+            headers: const ['Month', 'Sales', 'Change'],
             data: _buildMonthlyRows(salesData),
             headerDecoration: const pw.BoxDecoration(
               color: PdfColors.blueGrey100,
@@ -229,15 +184,11 @@ class PdfReportService {
               fontSize: 10,
               color: PdfColors.blueGrey900,
             ),
-            cellPadding:
-                const pw.EdgeInsets.symmetric(
+            cellPadding: const pw.EdgeInsets.symmetric(
               horizontal: 8,
               vertical: 7,
             ),
-            border: pw.TableBorder.all(
-              color: PdfColors.grey300,
-              width: 0.6,
-            ),
+            border: pw.TableBorder.all(color: PdfColors.grey300, width: 0.6),
           ),
         ],
       ),
@@ -249,32 +200,21 @@ class PdfReportService {
     );
   }
 
-  pw.Widget _buildKpiCard({
-    required String title,
-    required String value,
-  }) {
+  pw.Widget _buildKpiCard({required String title, required String value}) {
     return pw.Container(
       width: 118,
       padding: const pw.EdgeInsets.all(14),
       decoration: pw.BoxDecoration(
         color: PdfColors.white,
-        borderRadius: const pw.BorderRadius.all(
-          pw.Radius.circular(8),
-        ),
-        border: pw.Border.all(
-          color: PdfColors.grey300,
-        ),
+        borderRadius: const pw.BorderRadius.all(pw.Radius.circular(8)),
+        border: pw.Border.all(color: PdfColors.grey300),
       ),
       child: pw.Column(
-        crossAxisAlignment:
-            pw.CrossAxisAlignment.start,
+        crossAxisAlignment: pw.CrossAxisAlignment.start,
         children: [
           pw.Text(
             title,
-            style: const pw.TextStyle(
-              fontSize: 9,
-              color: PdfColors.grey700,
-            ),
+            style: const pw.TextStyle(fontSize: 9, color: PdfColors.grey700),
           ),
           pw.SizedBox(height: 7),
           pw.Text(
@@ -309,16 +249,13 @@ class PdfReportService {
   }) {
     final style = pw.TextStyle(
       fontSize: 10,
-      fontWeight:
-          isHeader ? pw.FontWeight.bold : null,
+      fontWeight: isHeader ? pw.FontWeight.bold : null,
       color: PdfColors.blueGrey900,
     );
 
     return pw.TableRow(
       decoration: isHeader
-          ? const pw.BoxDecoration(
-              color: PdfColors.grey100,
-            )
+          ? const pw.BoxDecoration(color: PdfColors.grey100)
           : null,
       children: [
         pw.Padding(
@@ -337,9 +274,7 @@ class PdfReportService {
     );
   }
 
-  List<List<String>> _buildMonthlyRows(
-    List<SalesRecord> salesData,
-  ) {
+  List<List<String>> _buildMonthlyRows(List<SalesRecord> salesData) {
     return salesData.asMap().entries.map((entry) {
       final index = entry.key;
       final record = entry.value;
@@ -347,34 +282,23 @@ class PdfReportService {
       var changeText = '--';
 
       if (index > 0) {
-        final previous =
-            salesData[index - 1].sales;
+        final previous = salesData[index - 1].sales;
 
         if (previous != 0) {
-          final change =
-              ((record.sales - previous) / previous) *
-                  100;
+          final change = ((record.sales - previous) / previous) * 100;
 
-          changeText =
-              '${change >= 0 ? '+' : ''}${change.toStringAsFixed(1)}%';
+          changeText = '${change >= 0 ? '+' : ''}${change.toStringAsFixed(1)}%';
         }
       }
 
-      return [
-        record.month,
-        _formatNumber(record.sales),
-        changeText,
-      ];
+      return [record.month, _formatNumber(record.sales), changeText];
     }).toList();
   }
 
-  double _calculateGrowthRate(
-    List<SalesRecord> salesData,
-  ) {
+  double _calculateGrowthRate(List<SalesRecord> salesData) {
     if (salesData.length < 2) return 0;
 
-    final previous =
-        salesData[salesData.length - 2].sales;
+    final previous = salesData[salesData.length - 2].sales;
     final latest = salesData.last.sales;
 
     if (previous == 0) return 0;
@@ -382,31 +306,21 @@ class PdfReportService {
     return ((latest - previous) / previous) * 100;
   }
 
-  double _calculateForecast(
-    List<SalesRecord> salesData,
-  ) {
+  double _calculateForecast(List<SalesRecord> salesData) {
     if (salesData.isEmpty) return 0;
 
     final recentRecords = salesData.length >= 3
-        ? salesData.sublist(
-            salesData.length - 3,
-          )
+        ? salesData.sublist(salesData.length - 3)
         : salesData;
 
     final recentAverage =
-        recentRecords.fold<double>(
-              0,
-              (sum, record) =>
-                  sum + record.sales,
-            ) /
-            recentRecords.length;
+        recentRecords.fold<double>(0, (sum, record) => sum + record.sales) /
+        recentRecords.length;
 
     return recentAverage * 1.05;
   }
 
-  String _buildRecommendation(
-    double growthRate,
-  ) {
+  String _buildRecommendation(double growthRate) {
     if (growthRate > 5) {
       return 'The latest sales results indicate strong growth. '
           'Consider increasing inventory preparation and reviewing '
@@ -428,16 +342,12 @@ class PdfReportService {
     final text = value.round().toString();
     final buffer = StringBuffer();
 
-    for (var index = 0;
-        index < text.length;
-        index++) {
-      final positionFromEnd =
-          text.length - index;
+    for (var index = 0; index < text.length; index++) {
+      final positionFromEnd = text.length - index;
 
       buffer.write(text[index]);
 
-      if (positionFromEnd > 1 &&
-          positionFromEnd % 3 == 1) {
+      if (positionFromEnd > 1 && positionFromEnd % 3 == 1) {
         buffer.write(',');
       }
     }

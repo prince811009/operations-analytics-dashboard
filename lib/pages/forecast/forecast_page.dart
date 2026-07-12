@@ -9,10 +9,7 @@ import '../../theme/app_theme.dart';
 class ForecastPage extends StatefulWidget {
   final List<SalesRecord> salesData;
 
-  const ForecastPage({
-    super.key,
-    required this.salesData,
-  });
+  const ForecastPage({super.key, required this.salesData});
 
   @override
   State<ForecastPage> createState() => _ForecastPageState();
@@ -62,9 +59,7 @@ class _ForecastPageState extends State<ForecastPage> {
     });
 
     try {
-      final result = await _forecastService.generateForecast(
-        widget.salesData,
-      );
+      final result = await _forecastService.generateForecast(widget.salesData);
 
       if (!mounted) return;
 
@@ -76,9 +71,7 @@ class _ForecastPageState extends State<ForecastPage> {
 
       setState(() {
         _forecastResult = null;
-        _errorMessage = error
-            .toString()
-            .replaceFirst('Exception: ', '');
+        _errorMessage = error.toString().replaceFirst('Exception: ', '');
       });
     } finally {
       if (mounted) {
@@ -129,10 +122,7 @@ class _ForecastPageState extends State<ForecastPage> {
                   else if (_errorMessage != null)
                     _buildErrorCard()
                   else if (_forecastResult != null)
-                    _buildForecastContent(
-                      _forecastResult!,
-                      isCompact,
-                    ),
+                    _buildForecastContent(_forecastResult!, isCompact),
                 ],
               ),
             );
@@ -163,16 +153,12 @@ class _ForecastPageState extends State<ForecastPage> {
             SizedBox(height: 8),
             Text(
               'Generate forecasting results from imported sales data.',
-              style: TextStyle(
-                fontSize: 16,
-                color: AppTheme.mutedText,
-              ),
+              style: TextStyle(fontSize: 16, color: AppTheme.mutedText),
             ),
           ],
         ),
         ElevatedButton.icon(
-          onPressed: _isLoading ||
-                  widget.salesData.length < 3
+          onPressed: _isLoading || widget.salesData.length < 3
               ? null
               : _loadForecast,
           icon: _isLoading
@@ -185,18 +171,11 @@ class _ForecastPageState extends State<ForecastPage> {
                   ),
                 )
               : const Icon(Icons.refresh),
-          label: Text(
-            _isLoading
-                ? 'Generating...'
-                : 'Regenerate Forecast',
-          ),
+          label: Text(_isLoading ? 'Generating...' : 'Regenerate Forecast'),
           style: ElevatedButton.styleFrom(
             backgroundColor: AppTheme.primary,
             foregroundColor: Colors.white,
-            padding: const EdgeInsets.symmetric(
-              horizontal: 18,
-              vertical: 15,
-            ),
+            padding: const EdgeInsets.symmetric(horizontal: 18, vertical: 15),
             shape: RoundedRectangleBorder(
               borderRadius: BorderRadius.circular(12),
             ),
@@ -206,10 +185,7 @@ class _ForecastPageState extends State<ForecastPage> {
     );
   }
 
-  Widget _buildForecastContent(
-    ForecastResult result,
-    bool isCompact,
-  ) {
+  Widget _buildForecastContent(ForecastResult result, bool isCompact) {
     return Column(
       children: [
         _buildKpiSection(result),
@@ -226,15 +202,9 @@ class _ForecastPageState extends State<ForecastPage> {
           Row(
             crossAxisAlignment: CrossAxisAlignment.start,
             children: [
-              Expanded(
-                flex: 7,
-                child: _buildChartCard(result),
-              ),
+              Expanded(flex: 7, child: _buildChartCard(result)),
               const SizedBox(width: 24),
-              Expanded(
-                flex: 3,
-                child: _buildModelCard(result),
-              ),
+              Expanded(flex: 3, child: _buildModelCard(result)),
             ],
           ),
         const SizedBox(height: 24),
@@ -255,11 +225,9 @@ class _ForecastPageState extends State<ForecastPage> {
         double cardWidth;
 
         if (constraints.maxWidth >= 1100) {
-          cardWidth =
-              (constraints.maxWidth - spacing * 3) / 4;
+          cardWidth = (constraints.maxWidth - spacing * 3) / 4;
         } else if (constraints.maxWidth >= 620) {
-          cardWidth =
-              (constraints.maxWidth - spacing) / 2;
+          cardWidth = (constraints.maxWidth - spacing) / 2;
         } else {
           cardWidth = constraints.maxWidth;
         }
@@ -318,9 +286,7 @@ class _ForecastPageState extends State<ForecastPage> {
             const SizedBox(height: 6),
             const Text(
               'The final point represents the predicted next period.',
-              style: TextStyle(
-                color: AppTheme.mutedText,
-              ),
+              style: TextStyle(color: AppTheme.mutedText),
             ),
             const SizedBox(height: 28),
             Expanded(
@@ -328,19 +294,14 @@ class _ForecastPageState extends State<ForecastPage> {
                   ? const Center(
                       child: Text(
                         'No forecast chart data available.',
-                        style: TextStyle(
-                          color: AppTheme.mutedText,
-                        ),
+                        style: TextStyle(color: AppTheme.mutedText),
                       ),
                     )
                   : Padding(
-                      padding: const EdgeInsets.only(
-                        right: 12,
-                      ),
+                      padding: const EdgeInsets.only(right: 12),
                       child: LineChart(
                         _buildChartData(result),
-                        duration:
-                            const Duration(milliseconds: 300),
+                        duration: const Duration(milliseconds: 300),
                       ),
                     ),
             ),
@@ -350,60 +311,39 @@ class _ForecastPageState extends State<ForecastPage> {
     );
   }
 
-  LineChartData _buildChartData(
-    ForecastResult result,
-  ) {
+  LineChartData _buildChartData(ForecastResult result) {
     final values = [
-      ...result.historical.map(
-        (item) => item.sales,
-      ),
+      ...result.historical.map((item) => item.sales),
       result.forecastSales,
     ];
 
     final minValue = values.reduce(
-      (current, next) =>
-          current < next ? current : next,
+      (current, next) => current < next ? current : next,
     );
 
     final maxValue = values.reduce(
-      (current, next) =>
-          current > next ? current : next,
+      (current, next) => current > next ? current : next,
     );
 
     final range = maxValue - minValue;
-    final padding =
-        range == 0 ? maxValue * 0.15 : range * 0.25;
+    final padding = range == 0 ? maxValue * 0.15 : range * 0.25;
 
-    final minY =
-        (minValue - padding).clamp(0, double.infinity);
+    final minY = (minValue - padding).clamp(0, double.infinity);
     final maxY = maxValue + padding;
-    final interval =
-        maxY == minY ? 1.0 : (maxY - minY) / 5;
+    final interval = maxY == minY ? 1.0 : (maxY - minY) / 5;
 
     final historicalSpots = result.historical
         .asMap()
         .entries
-        .map(
-          (entry) => FlSpot(
-            entry.key.toDouble(),
-            entry.value.sales,
-          ),
-        )
+        .map((entry) => FlSpot(entry.key.toDouble(), entry.value.sales))
         .toList();
 
-    final forecastIndex =
-        result.historical.length.toDouble();
+    final forecastIndex = result.historical.length.toDouble();
 
     final forecastSpots = [
       if (result.historical.isNotEmpty)
-        FlSpot(
-          forecastIndex - 1,
-          result.historical.last.sales,
-        ),
-      FlSpot(
-        forecastIndex,
-        result.forecastSales,
-      ),
+        FlSpot(forecastIndex - 1, result.historical.last.sales),
+      FlSpot(forecastIndex, result.forecastSales),
     ];
 
     return LineChartData(
@@ -417,22 +357,13 @@ class _ForecastPageState extends State<ForecastPage> {
         drawVerticalLine: false,
         horizontalInterval: interval,
         getDrawingHorizontalLine: (_) {
-          return const FlLine(
-            color: AppTheme.border,
-            strokeWidth: 1,
-          );
+          return const FlLine(color: AppTheme.border, strokeWidth: 1);
         },
       ),
       titlesData: FlTitlesData(
-        topTitles: const AxisTitles(
-          sideTitles: SideTitles(
-            showTitles: false,
-          ),
-        ),
+        topTitles: const AxisTitles(sideTitles: SideTitles(showTitles: false)),
         rightTitles: const AxisTitles(
-          sideTitles: SideTitles(
-            showTitles: false,
-          ),
+          sideTitles: SideTitles(showTitles: false),
         ),
         leftTitles: AxisTitles(
           sideTitles: SideTitles(
@@ -442,10 +373,7 @@ class _ForecastPageState extends State<ForecastPage> {
             getTitlesWidget: (value, meta) {
               return Text(
                 '${(value / 1000).toStringAsFixed(0)}K',
-                style: const TextStyle(
-                  fontSize: 11,
-                  color: AppTheme.mutedText,
-                ),
+                style: const TextStyle(fontSize: 11, color: AppTheme.mutedText),
               );
             },
           ),
@@ -458,8 +386,7 @@ class _ForecastPageState extends State<ForecastPage> {
             getTitlesWidget: (value, meta) {
               final index = value.toInt();
 
-              if (index ==
-                  result.historical.length) {
+              if (index == result.historical.length) {
                 return const Padding(
                   padding: EdgeInsets.only(top: 10),
                   child: Text(
@@ -473,8 +400,7 @@ class _ForecastPageState extends State<ForecastPage> {
                 );
               }
 
-              if (index < 0 ||
-                  index >= result.historical.length) {
+              if (index < 0 || index >= result.historical.length) {
                 return const SizedBox.shrink();
               }
 
@@ -501,9 +427,7 @@ class _ForecastPageState extends State<ForecastPage> {
           dotData: const FlDotData(show: true),
           belowBarData: BarAreaData(
             show: true,
-            color: AppTheme.primary.withValues(
-              alpha: 0.08,
-            ),
+            color: AppTheme.primary.withValues(alpha: 0.08),
           ),
         ),
         LineChartBarData(
@@ -514,12 +438,7 @@ class _ForecastPageState extends State<ForecastPage> {
           dashArray: [8, 6],
           dotData: FlDotData(
             show: true,
-            getDotPainter: (
-              spot,
-              percent,
-              barData,
-              index,
-            ) {
+            getDotPainter: (spot, percent, barData, index) {
               return FlDotCirclePainter(
                 radius: 5,
                 color: const Color(0xFF7C3AED),
@@ -547,25 +466,13 @@ class _ForecastPageState extends State<ForecastPage> {
             ),
           ),
           const SizedBox(height: 24),
-          _buildDetailRow(
-            'Model',
-            result.model,
-          ),
+          _buildDetailRow('Model', result.model),
           const Divider(height: 32),
-          _buildDetailRow(
-            'Forecast Period',
-            result.forecastMonth,
-          ),
+          _buildDetailRow('Forecast Period', result.forecastMonth),
           const Divider(height: 32),
-          _buildDetailRow(
-            'MAE',
-            result.mae.toStringAsFixed(2),
-          ),
+          _buildDetailRow('MAE', result.mae.toStringAsFixed(2)),
           const Divider(height: 32),
-          _buildDetailRow(
-            'RMSE',
-            result.rmse.toStringAsFixed(2),
-          ),
+          _buildDetailRow('RMSE', result.rmse.toStringAsFixed(2)),
           const Divider(height: 32),
           _buildDetailRow(
             'Source Records',
@@ -576,20 +483,12 @@ class _ForecastPageState extends State<ForecastPage> {
     );
   }
 
-  Widget _buildDetailRow(
-    String label,
-    String value,
-  ) {
+  Widget _buildDetailRow(String label, String value) {
     return Row(
       crossAxisAlignment: CrossAxisAlignment.start,
       children: [
         Expanded(
-          child: Text(
-            label,
-            style: const TextStyle(
-              color: AppTheme.mutedText,
-            ),
-          ),
+          child: Text(label, style: const TextStyle(color: AppTheme.mutedText)),
         ),
         const SizedBox(width: 16),
         Flexible(
@@ -606,9 +505,7 @@ class _ForecastPageState extends State<ForecastPage> {
     );
   }
 
-  Widget _buildRecommendationCard(
-    ForecastResult result,
-  ) {
+  Widget _buildRecommendationCard(ForecastResult result) {
     return _ForecastCard(
       child: Row(
         crossAxisAlignment: CrossAxisAlignment.start,
@@ -628,8 +525,7 @@ class _ForecastPageState extends State<ForecastPage> {
           const SizedBox(width: 16),
           Expanded(
             child: Column(
-              crossAxisAlignment:
-                  CrossAxisAlignment.start,
+              crossAxisAlignment: CrossAxisAlignment.start,
               children: [
                 const Text(
                   'Forecast Recommendation',
@@ -666,9 +562,7 @@ class _ForecastPageState extends State<ForecastPage> {
             SizedBox(height: 18),
             Text(
               'Generating forecast...',
-              style: TextStyle(
-                color: AppTheme.mutedText,
-              ),
+              style: TextStyle(color: AppTheme.mutedText),
             ),
           ],
         ),
@@ -701,9 +595,7 @@ class _ForecastPageState extends State<ForecastPage> {
             const Text(
               'Upload a CSV file containing at least 3 sales records.',
               textAlign: TextAlign.center,
-              style: TextStyle(
-                color: AppTheme.mutedText,
-              ),
+              style: TextStyle(color: AppTheme.mutedText),
             ),
           ],
         ),
@@ -718,29 +610,19 @@ class _ForecastPageState extends State<ForecastPage> {
       decoration: BoxDecoration(
         color: const Color(0xFFFEF2F2),
         borderRadius: BorderRadius.circular(14),
-        border: Border.all(
-          color: const Color(0xFFFECACA),
-        ),
+        border: Border.all(color: const Color(0xFFFECACA)),
       ),
       child: Row(
         children: [
-          const Icon(
-            Icons.error_outline,
-            color: Color(0xFFDC2626),
-          ),
+          const Icon(Icons.error_outline, color: Color(0xFFDC2626)),
           const SizedBox(width: 12),
           Expanded(
             child: Text(
               _errorMessage!,
-              style: const TextStyle(
-                color: Color(0xFF991B1B),
-              ),
+              style: const TextStyle(color: Color(0xFF991B1B)),
             ),
           ),
-          TextButton(
-            onPressed: _loadForecast,
-            child: const Text('Retry'),
-          ),
+          TextButton(onPressed: _loadForecast, child: const Text('Retry')),
         ],
       ),
     );
@@ -750,9 +632,7 @@ class _ForecastPageState extends State<ForecastPage> {
 class _ForecastCard extends StatelessWidget {
   final Widget child;
 
-  const _ForecastCard({
-    required this.child,
-  });
+  const _ForecastCard({required this.child});
 
   @override
   Widget build(BuildContext context) {
@@ -796,22 +676,16 @@ class _ForecastKpiCard extends StatelessWidget {
                 color: const Color(0xFFEFF6FF),
                 borderRadius: BorderRadius.circular(14),
               ),
-              child: Icon(
-                icon,
-                color: AppTheme.primary,
-              ),
+              child: Icon(icon, color: AppTheme.primary),
             ),
             const SizedBox(width: 14),
             Expanded(
               child: Column(
-                crossAxisAlignment:
-                    CrossAxisAlignment.start,
+                crossAxisAlignment: CrossAxisAlignment.start,
                 children: [
                   Text(
                     title,
-                    style: const TextStyle(
-                      color: AppTheme.mutedText,
-                    ),
+                    style: const TextStyle(color: AppTheme.mutedText),
                   ),
                   const SizedBox(height: 6),
                   Text(

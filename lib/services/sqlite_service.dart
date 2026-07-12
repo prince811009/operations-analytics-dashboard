@@ -34,9 +34,7 @@ class SqliteService {
     return _database!;
   }
 
-  Future<void> replaceSalesData(
-    List<Map<String, Object?>> records,
-  ) async {
+  Future<void> replaceSalesData(List<Map<String, Object?>> records) async {
     final db = await database;
 
     await db.transaction((transaction) async {
@@ -55,15 +53,10 @@ class SqliteService {
   Future<List<Map<String, Object?>>> getAllSales() async {
     final db = await database;
 
-    return db.query(
-      'sales',
-      orderBy: 'month ASC',
-    );
+    return db.query('sales', orderBy: 'month ASC');
   }
 
-  Future<List<Map<String, Object?>>> getSalesAbove(
-    double minimumSales,
-  ) async {
+  Future<List<Map<String, Object?>>> getSalesAbove(double minimumSales) async {
     final db = await database;
 
     return db.query(

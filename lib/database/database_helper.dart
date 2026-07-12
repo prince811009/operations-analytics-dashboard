@@ -1,4 +1,3 @@
-import 'package:sqlite3/common.dart';
 import 'package:sqlite3/wasm.dart';
 
 import '../models/sales_record.dart';
@@ -17,10 +16,7 @@ class DatabaseHelper {
 
     final sqlite = await WasmSqlite3.loadFromUrlString('sqlite3.wasm');
 
-    sqlite.registerVirtualFileSystem(
-      InMemoryFileSystem(),
-      makeDefault: true,
-    );
+    sqlite.registerVirtualFileSystem(InMemoryFileSystem(), makeDefault: true);
 
     final database = sqlite.open('/operations.db');
 
@@ -50,10 +46,7 @@ class DatabaseHelper {
       );
 
       for (final record in records) {
-        statement.execute([
-          record.month,
-          record.sales,
-        ]);
+        statement.execute([record.month, record.sales]);
       }
 
       statement.close();
@@ -68,54 +61,39 @@ class DatabaseHelper {
   Future<List<Map<String, Object?>>> getAllSales() async {
     final db = await database;
 
-    final result = db.select(
-      '''
+    final result = db.select('''
       SELECT id, month, sales
       FROM sales
       ORDER BY month ASC;
-      ''',
-    );
+      ''');
 
     return result.map((row) {
-      return {
-        'id': row['id'],
-        'month': row['month'],
-        'sales': row['sales'],
-      };
+      return {'id': row['id'], 'month': row['month'], 'sales': row['sales']};
     }).toList();
   }
 
-  Future<List<Map<String, Object?>>> runSelectQuery(
-    String sql,
-  ) async {
+  Future<List<Map<String, Object?>>> runSelectQuery(String sql) async {
     final normalizedSql = sql.trim().toLowerCase();
 
     if (!normalizedSql.startsWith('select')) {
-      throw const FormatException(
-        'Only SELECT queries are allowed.',
-      );
+      throw const FormatException('Only SELECT queries are allowed.');
     }
 
     final db = await database;
     final result = db.select(sql);
 
     return result.map((row) {
-      return {
-        for (final column in result.columnNames)
-          column: row[column],
-      };
+      return {for (final column in result.columnNames) column: row[column]};
     }).toList();
   }
 
   Future<double> getAverageSales() async {
     final db = await database;
 
-    final result = db.select(
-      '''
+    final result = db.select('''
       SELECT AVG(sales) AS average_sales
       FROM sales;
-      ''',
-    );
+      ''');
 
     final value = result.first['average_sales'];
 
@@ -125,12 +103,10 @@ class DatabaseHelper {
   Future<double> getTotalSales() async {
     final db = await database;
 
-    final result = db.select(
-      '''
+    final result = db.select('''
       SELECT SUM(sales) AS total_sales
       FROM sales;
-      ''',
-    );
+      ''');
 
     final value = result.first['total_sales'];
 
@@ -140,12 +116,10 @@ class DatabaseHelper {
   Future<int> getRecordCount() async {
     final db = await database;
 
-    final result = db.select(
-      '''
+    final result = db.select('''
       SELECT COUNT(*) AS record_count
       FROM sales;
-      ''',
-    );
+      ''');
 
     final value = result.first['record_count'];
 
