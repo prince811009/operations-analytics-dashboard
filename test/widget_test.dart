@@ -1,30 +1,27 @@
-// This is a basic Flutter widget test.
-//
-// To perform an interaction with a widget in your test, use the WidgetTester
-// utility in the flutter_test package. For example, you can send tap and scroll
-// gestures. You can also use WidgetTester to find child widgets in the widget
-// tree, read text, and verify that the values of widget properties are correct.
-
-import 'package:flutter/material.dart';
 import 'package:flutter_test/flutter_test.dart';
-
-import 'package:sales_analytics_dashboard/main.dart';
+import 'package:sales_analytics_dashboard/models/sales_record.dart';
 
 void main() {
-  testWidgets('Counter increments smoke test', (WidgetTester tester) async {
-    // Build our app and trigger a frame.
-    await tester.pumpWidget(const MyApp());
+  group('SalesRecord', () {
+    test('creates a record from a valid CSV row', () {
+      final record = SalesRecord.fromCsvRow(['2025-01', '120000']);
 
-    // Verify that our counter starts at 0.
-    expect(find.text('0'), findsOneWidget);
-    expect(find.text('1'), findsNothing);
+      expect(record.month, '2025-01');
+      expect(record.sales, 120000);
+    });
 
-    // Tap the '+' icon and trigger a frame.
-    await tester.tap(find.byIcon(Icons.add));
-    await tester.pump();
+    test('supports sales values containing commas', () {
+      final record = SalesRecord.fromCsvRow(['2025-02', '135,000']);
 
-    // Verify that our counter has incremented.
-    expect(find.text('0'), findsNothing);
-    expect(find.text('1'), findsOneWidget);
+      expect(record.month, '2025-02');
+      expect(record.sales, 135000);
+    });
+
+    test('throws FormatException for an invalid row', () {
+      expect(
+        () => SalesRecord.fromCsvRow(['2025-03']),
+        throwsA(isA<FormatException>()),
+      );
+    });
   });
 }
