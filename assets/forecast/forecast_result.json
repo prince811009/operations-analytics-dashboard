@@ -1,0 +1,45 @@
+{
+  "model": "Linear Regression Baseline",
+  "forecast_month": "next_period",
+  "forecast_sales": 191071.43,
+  "latest_sales": 181000.0,
+  "growth_rate_percent": 5.56,
+  "trend": "increasing",
+  "mae": 4684.52,
+  "rmse": 5552.24,
+  "recommendation": "Projected sales show a positive trend. Prepare inventory and operational capacity for increased demand.",
+  "historical": [
+    {
+      "month": "2025-01",
+      "sales": 120000.0
+    },
+    {
+      "month": "2025-02",
+      "sales": 135000.0
+    },
+    {
+      "month": "2025-03",
+      "sales": 128000.0
+    },
+    {
+      "month": "2025-04",
+      "sales": 150000.0
+    },
+    {
+      "month": "2025-05",
+      "sales": 160000.0
+    },
+    {
+      "month": "2025-06",
+      "sales": 172000.0
+    },
+    {
+      "month": "2025-07",
+      "sales": 168000.0
+    },
+    {
+      "month": "2025-08",
+      "sales": 181000.0
+    }
+  ]
+}

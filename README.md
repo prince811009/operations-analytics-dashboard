@@ -1,65 +1,121 @@
-# Sales Analytics Dashboard
+# Operations Analytics Platform
 
-A Flutter-based analytics dashboard that demonstrates how business data can be imported, analyzed, forecasted, and transformed into management reports.
+A full-stack operations analytics platform built with Flutter, SQLite, SQL, Python, FastAPI, and machine-learning forecasting.
 
-## Project Overview
+The application transforms uploaded CSV data into interactive dashboards, SQL query results, forecasting insights, management reports, and downloadable PDF reports.
 
-This project was inspired by two areas of experience:
+## Overview
 
-* My master's thesis on LSTM-based sales forecasting using Python and Keras
-* My experience building workflow digitization systems used by 3,600+ users across 20+ healthcare teams
+This project combines my professional experience in workflow digitization and reporting systems with my academic background in artificial intelligence and time-series forecasting.
 
-The goal is to demonstrate how operational data can be transformed into meaningful business insights and decision-support information.
+Users can:
 
-## Features
+- Upload real CSV data
+- Review KPI dashboards and trend charts
+- Search, filter, sort, and export operational data
+- Run read-only SQL queries against SQLite
+- Generate forecasts through a Python FastAPI service
+- Review MAE, RMSE, projected growth, and recommendations
+- Export a management report as PDF
+
+## Screenshots
 
 ### Dashboard
 
-* Total Sales KPI
-* Average Sales KPI
-* Forecast KPI
-* Sales Trend Visualization
+![Dashboard](screenshots/dashboard.png)
 
 ### Data Explorer
 
-* Sales Data Table
-* Month-Based Search
-* Data Filtering
+![Data Explorer](screenshots/data-explorer.png)
+
+### SQL Query Explorer
+
+![SQL Query Explorer](screenshots/sql-query.png)
+
+### Forecast Analytics
+
+![Forecast Analytics](screenshots/forecast.png)
 
 ### Management Report
 
-* Best Month Analysis
-* Worst Month Analysis
-* Forecast Summary
-* Business Recommendations
+![Management Report](screenshots/report.png)
 
-## Tech Stack
+## Core Features
 
-### Frontend
+### Dashboard
 
-* Flutter
-* Dart
+- Responsive SaaS-style interface
+- Collapsible sidebar
+- Total records, total sales, average sales, and growth KPIs
+- Dynamic sales trend chart
+- Recent imported records
+- Data-driven operational recommendations
 
-### Data Processing
+### CSV Import
 
-* CSV Import
-* Analytics Calculations
-* Forecast Simulation
+- Upload real CSV files
+- Validate required columns
+- Parse and normalize sales records
+- Update all application pages from shared imported data
 
-### Visualization
+Required CSV format:
 
-* fl_chart
+```csv
+month,sales
+2025-01,120000
+2025-02,135000
+2025-03,128000
 
-## Future Improvements
+Data Explorer
+Search records by month
+Filter by minimum sales
+Sort by sales value
+Calculate filtered totals and averages
+Export filtered results to CSV
+SQLite and SQL Query Explorer
+Store imported records in SQLite
+Execute read-only SELECT queries
+Display dynamic query columns and results
+Provide reusable example queries
 
-* SQLite Integration
-* SQL-Based Query Engine
-* Real CSV File Upload
-* LSTM Forecast API Integration
-* Export Reports to PDF
+Example:
+SELECT month, sales
+FROM sales
+WHERE sales > 150000
+ORDER BY sales DESC;
 
-## Why I Built This
-
-I wanted to combine my academic experience in forecasting models with my professional experience in workflow digitization and reporting systems.
-
-This project demonstrates how software can support operational visibility, reporting, and business decision-making.
+Forecasting
+Flutter sends imported data to FastAPI
+Python processes the sales time series
+Scikit-learn generates a linear-regression baseline
+API returns forecast values and model metrics
+Flutter displays historical and forecast trends
+Includes MAE, RMSE, projected growth, and recommendations
+Management Report
+Total and average sales
+Best and worst performing periods
+Monthly growth calculations
+Management recommendations
+Downloadable PDF report
+Architecture
+CSV Upload
+    |
+    v
+Flutter Data Model
+    |
+    +----------------------+
+    |                      |
+    v                      v
+SQLite Database       Dashboard / Reports
+    |                      |
+    v                      v
+SQL Query Explorer    Data Explorer
+                           |
+                           v
+                    FastAPI Forecast API
+                           |
+                           v
+                 Python / Pandas / NumPy
+                           |
+                           v
+                Forecast Result + Metrics
