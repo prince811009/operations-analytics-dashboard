@@ -20,7 +20,9 @@ class _AppShellState extends State<AppShell> {
   final CsvService _csvService = CsvService();
 
   int selectedIndex = 0;
+  bool isSidebarCollapsed = false;
   bool isImporting = false;
+
   String? importedFileName;
   String? importError;
 
@@ -89,9 +91,15 @@ class _AppShellState extends State<AppShell> {
         children: [
           AppSidebar(
             selectedIndex: selectedIndex,
+            isCollapsed: isSidebarCollapsed,
             onItemSelected: (index) {
               setState(() {
                 selectedIndex = index;
+              });
+            },
+            onToggleCollapse: () {
+              setState(() {
+                isSidebarCollapsed = !isSidebarCollapsed;
               });
             },
           ),
