@@ -65,26 +65,6 @@ class DashboardPage extends StatelessWidget {
     return _totalSales / salesData.length;
   }
 
-  double get _forecastSales {
-    if (salesData.isEmpty) return 0;
-
-    if (salesData.length == 1) {
-      return salesData.last.sales;
-    }
-
-    final recentRecords = salesData.length >= 3
-        ? salesData.sublist(salesData.length - 3)
-        : salesData;
-
-    final recentAverage = recentRecords.fold<double>(
-          0,
-          (sum, item) => sum + item.sales,
-        ) /
-        recentRecords.length;
-
-    return recentAverage * 1.05;
-  }
-
   double get _growthRate {
     if (salesData.length < 2) return 0;
 
@@ -258,15 +238,15 @@ class DashboardPage extends StatelessWidget {
         SizedBox(
           width: cardWidth,
           child: KpiCard(
-            title: 'Forecast',
-            value: _formatNumber(_forecastSales),
-            icon: Icons.show_chart,
+            title: 'Total Sales',
+            value: _formatNumber(_totalSales),
+            icon: Icons.payments_outlined,
           ),
         ),
         SizedBox(
           width: cardWidth,
           child: KpiCard(
-            title: 'Average',
+            title: 'Average Sales',
             value: _formatNumber(_averageSales),
             icon: Icons.analytics_outlined,
           ),
@@ -276,7 +256,9 @@ class DashboardPage extends StatelessWidget {
           child: KpiCard(
             title: 'Growth',
             value: growthText,
-            icon: Icons.trending_up,
+            icon: _growthRate >= 0
+                ? Icons.trending_up
+                : Icons.trending_down,
           ),
         ),
       ],
@@ -388,10 +370,13 @@ class DashboardPage extends StatelessWidget {
         .reduce((current, next) => current < next ? current : next);
 
     final range = maximumSales - minimumSales;
-    final padding = range == 0 ? maximumSales * 0.15 : range * 0.25;
+    final padding = range == 0
+        ? (maximumSales == 0 ? 1.0 : maximumSales * 0.15)
+        : range * 0.25;
 
     final minY = (minimumSales - padding).clamp(0, double.infinity);
     final maxY = maximumSales + padding;
+    final chartInterval = maxY == minY ? 1.0 : (maxY - minY) / 5;
 
     final spots = salesData.asMap().entries.map((entry) {
       return FlSpot(
@@ -408,7 +393,7 @@ class DashboardPage extends StatelessWidget {
       gridData: FlGridData(
         show: true,
         drawVerticalLine: false,
-        horizontalInterval: (maxY - minY) / 5,
+        horizontalInterval: chartInterval,
         getDrawingHorizontalLine: (value) {
           return const FlLine(
             color: AppTheme.border,
@@ -428,7 +413,7 @@ class DashboardPage extends StatelessWidget {
           sideTitles: SideTitles(
             showTitles: true,
             reservedSize: 56,
-            interval: (maxY - minY) / 5,
+            interval: chartInterval,
             getTitlesWidget: (value, meta) {
               return Padding(
                 padding: const EdgeInsets.only(right: 10),
