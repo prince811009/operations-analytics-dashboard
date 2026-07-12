@@ -1,7 +1,13 @@
+import '../../models/sales_record.dart';
 import 'package:flutter/material.dart';
 
 class SqlQueryPage extends StatelessWidget {
-  const SqlQueryPage({super.key});
+  final List<SalesRecord> salesData;
+
+  const SqlQueryPage({
+    super.key,
+    required this.salesData,
+  });
 
   @override
   Widget build(BuildContext context) {

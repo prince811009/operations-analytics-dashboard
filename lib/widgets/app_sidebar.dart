@@ -1,7 +1,14 @@
 import 'package:flutter/material.dart';
 
 class AppSidebar extends StatelessWidget {
-  const AppSidebar({super.key});
+  final int selectedIndex;
+  final ValueChanged<int> onItemSelected;
+
+  const AppSidebar({
+    super.key,
+    required this.selectedIndex,
+    required this.onItemSelected,
+  });
 
   @override
   Widget build(BuildContext context) {
@@ -19,31 +26,46 @@ class AppSidebar extends StatelessWidget {
               fontWeight: FontWeight.bold,
             ),
           ),
-
           const SizedBox(height: 40),
-
-          menu(Icons.dashboard, "Dashboard"),
-          menu(Icons.table_chart, "Data Explorer"),
-          menu(Icons.storage, "SQL Query"),
-          menu(Icons.show_chart, "Forecast"),
-          menu(Icons.description, "Reports"),
+          _menu(0, Icons.dashboard, "Dashboard"),
+          _menu(1, Icons.table_chart, "Data Explorer"),
+          _menu(2, Icons.storage, "SQL Query"),
+          _menu(3, Icons.show_chart, "Forecast"),
+          _menu(4, Icons.description, "Reports"),
         ],
       ),
     );
   }
 
-  Widget menu(IconData icon, String title) {
-    return Padding(
-      padding: const EdgeInsets.only(bottom: 16),
-      child: Row(
-        children: [
-          Icon(icon),
-          const SizedBox(width: 12),
-          Text(
-            title,
-            style: const TextStyle(fontSize: 18),
-          ),
-        ],
+  Widget _menu(int index, IconData icon, String title) {
+    final isSelected = selectedIndex == index;
+
+    return InkWell(
+      onTap: () => onItemSelected(index),
+      child: Container(
+        margin: const EdgeInsets.only(bottom: 12),
+        padding: const EdgeInsets.symmetric(horizontal: 14, vertical: 14),
+        decoration: BoxDecoration(
+          color: isSelected ? const Color(0xffEFF6FF) : Colors.transparent,
+          borderRadius: BorderRadius.circular(14),
+        ),
+        child: Row(
+          children: [
+            Icon(
+              icon,
+              color: isSelected ? const Color(0xff2563EB) : Colors.black54,
+            ),
+            const SizedBox(width: 12),
+            Text(
+              title,
+              style: TextStyle(
+                fontSize: 16,
+                fontWeight: isSelected ? FontWeight.bold : FontWeight.normal,
+                color: isSelected ? const Color(0xff2563EB) : Colors.black87,
+              ),
+            ),
+          ],
+        ),
       ),
     );
   }

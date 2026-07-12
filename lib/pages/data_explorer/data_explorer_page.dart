@@ -1,16 +1,18 @@
+import '../../models/sales_record.dart';
 import 'package:flutter/material.dart';
 
 class DataExplorerPage extends StatelessWidget {
-  const DataExplorerPage({super.key});
+  final List<SalesRecord> salesData;
+
+  const DataExplorerPage({
+    super.key,
+    required this.salesData,
+  });
 
   @override
   Widget build(BuildContext context) {
     final data = [
-      {"month": "2025-01", "sales": "120000"},
-      {"month": "2025-02", "sales": "135000"},
-      {"month": "2025-03", "sales": "128000"},
-      {"month": "2025-04", "sales": "150000"},
-      {"month": "2025-05", "sales": "160000"},
+
     ];
 
     return Scaffold(
