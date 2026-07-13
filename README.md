@@ -1,8 +1,8 @@
 # Operations Analytics Platform
 
-A full-stack analytics platform built with **Flutter**, **FastAPI**, **SQLite**, and **Python**.
+A production-ready full-stack analytics platform built with Flutter, FastAPI, SQLite, and Python.
 
-The application allows users to upload CSV files, explore operational data, execute SQL queries, generate sales forecasts, and export management reports as PDF.
+The platform enables users to upload operational datasets, explore data with SQL, generate forecasting insights, and export management reports through a modern responsive web interface.
 
 ---
 
