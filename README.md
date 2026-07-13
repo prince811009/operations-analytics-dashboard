@@ -10,7 +10,7 @@ The application allows users to upload CSV files, explore operational data, exec
 
 🌐 Frontend: https://operations-analytics-dashboard.vercel.app
 
-🚀 API Docs: https://operations-analytics-api.vercel.app/health/docs
+🚀 API Docs: https://operations-analytics-api.vercel.app/docs
 
 ❤️ API Health: https://operations-analytics-api.vercel.app/health
 
