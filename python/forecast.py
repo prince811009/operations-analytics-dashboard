@@ -1,51 +1,120 @@
 from __future__ import annotations
 
-import argparse
-import json
+import csv
+import math
 from pathlib import Path
 
-import numpy as np
-import pandas as pd
-from sklearn.linear_model import LinearRegression
-from sklearn.metrics import mean_absolute_error, mean_squared_error
+
+def load_sales_data(csv_path: Path) -> list[dict[str, object]]:
+    records: list[dict[str, object]] = []
+
+    with csv_path.open(
+        "r",
+        encoding="utf-8-sig",
+        newline="",
+    ) as csv_file:
+        reader = csv.DictReader(csv_file)
+
+        if reader.fieldnames is None:
+            raise ValueError("The CSV file has no header.")
+
+        normalized_headers = {
+            header.strip().lower()
+            for header in reader.fieldnames
+            if header
+        }
+
+        required_columns = {"month", "sales"}
+        missing_columns = required_columns - normalized_headers
+
+        if missing_columns:
+            missing = ", ".join(sorted(missing_columns))
+            raise ValueError(
+                f"Missing required CSV columns: {missing}"
+            )
+
+        for row in reader:
+            month = str(row.get("month", "")).strip()
+            raw_sales = str(row.get("sales", "")).replace(",", "").strip()
+
+            if not month and not raw_sales:
+                continue
+
+            try:
+                sales = float(raw_sales)
+            except ValueError as error:
+                raise ValueError(
+                    f"Invalid sales value for {month}: {raw_sales}"
+                ) from error
+
+            records.append({
+                "month": month,
+                "sales": sales,
+            })
+
+    if len(records) < 3:
+        raise ValueError(
+            "At least 3 valid sales records are required."
+        )
+
+    return records
 
 
-def load_sales_data(csv_path: Path) -> pd.DataFrame:
-    dataframe = pd.read_csv(csv_path)
+def build_forecast(
+    records: list[dict[str, object]],
+) -> dict[str, object]:
+    sales_values = [
+        float(record["sales"])
+        for record in records
+    ]
 
-    required_columns = {"month", "sales"}
-    missing_columns = required_columns - set(dataframe.columns)
+    count = len(sales_values)
+    x_values = list(range(count))
 
-    if missing_columns:
-        missing = ", ".join(sorted(missing_columns))
-        raise ValueError(f"Missing required CSV columns: {missing}")
+    x_mean = sum(x_values) / count
+    y_mean = sum(sales_values) / count
 
-    dataframe = dataframe[["month", "sales"]].copy()
-    dataframe["month"] = dataframe["month"].astype(str)
-    dataframe["sales"] = pd.to_numeric(dataframe["sales"], errors="coerce")
-    dataframe = dataframe.dropna(subset=["sales"]).reset_index(drop=True)
+    numerator = sum(
+        (x - x_mean) * (y - y_mean)
+        for x, y in zip(x_values, sales_values)
+    )
 
-    if len(dataframe) < 3:
-        raise ValueError("At least 3 valid sales records are required.")
+    denominator = sum(
+        (x - x_mean) ** 2
+        for x in x_values
+    )
 
-    return dataframe
+    slope = numerator / denominator if denominator != 0 else 0.0
+    intercept = y_mean - slope * x_mean
 
+    fitted_values = [
+        intercept + slope * x
+        for x in x_values
+    ]
 
-def build_forecast(dataframe: pd.DataFrame) -> dict[str, object]:
-    x = np.arange(len(dataframe), dtype=float).reshape(-1, 1)
-    y = dataframe["sales"].to_numpy(dtype=float)
+    next_forecast = intercept + slope * count
 
-    model = LinearRegression()
-    model.fit(x, y)
+    absolute_errors = [
+        abs(actual - predicted)
+        for actual, predicted in zip(
+            sales_values,
+            fitted_values,
+        )
+    ]
 
-    fitted_values = model.predict(x)
-    next_index = np.array([[float(len(dataframe))]])
-    next_forecast = float(model.predict(next_index)[0])
+    squared_errors = [
+        (actual - predicted) ** 2
+        for actual, predicted in zip(
+            sales_values,
+            fitted_values,
+        )
+    ]
 
-    mae = float(mean_absolute_error(y, fitted_values))
-    rmse = float(np.sqrt(mean_squared_error(y, fitted_values)))
+    mae = sum(absolute_errors) / count
+    rmse = math.sqrt(sum(squared_errors) / count)
 
-    latest_sales = float(y[-1])
+    latest_sales = sales_values[-1]
+
     growth_rate = (
         ((next_forecast - latest_sales) / latest_sales) * 100
         if latest_sales != 0
@@ -56,13 +125,15 @@ def build_forecast(dataframe: pd.DataFrame) -> dict[str, object]:
         trend = "increasing"
         recommendation = (
             "Projected sales show a positive trend. "
-            "Prepare inventory and operational capacity for increased demand."
+            "Prepare inventory and operational capacity "
+            "for increased demand."
         )
     elif growth_rate < -5:
         trend = "decreasing"
         recommendation = (
             "Projected sales show a declining trend. "
-            "Review demand drivers and possible operational bottlenecks."
+            "Review demand drivers and possible "
+            "operational bottlenecks."
         )
     else:
         trend = "stable"
@@ -81,49 +152,5 @@ def build_forecast(dataframe: pd.DataFrame) -> dict[str, object]:
         "mae": round(mae, 2),
         "rmse": round(rmse, 2),
         "recommendation": recommendation,
-        "historical": [
-            {
-                "month": str(row.month),
-                "sales": float(row.sales),
-            }
-            for row in dataframe.itertuples(index=False)
-        ],
+        "historical": records,
     }
-
-
-def main() -> None:
-    parser = argparse.ArgumentParser(
-        description="Generate a sales forecast JSON file from CSV data."
-    )
-    parser.add_argument(
-        "--input",
-        required=True,
-        help="Path to the input CSV file.",
-    )
-    parser.add_argument(
-        "--output",
-        required=True,
-        help="Path to the output JSON file.",
-    )
-    args = parser.parse_args()
-
-    input_path = Path(args.input)
-    output_path = Path(args.output)
-
-    dataframe = load_sales_data(input_path)
-    forecast_result = build_forecast(dataframe)
-
-    output_path.parent.mkdir(parents=True, exist_ok=True)
-    output_path.write_text(
-        json.dumps(forecast_result, indent=2),
-        encoding="utf-8",
-    )
-
-    print(f"Forecast generated: {output_path}")
-    print(f"Next forecast: {forecast_result['forecast_sales']}")
-    print(f"RMSE: {forecast_result['rmse']}")
-    print(f"MAE: {forecast_result['mae']}")
-
-
-if __name__ == "__main__":
-    main()

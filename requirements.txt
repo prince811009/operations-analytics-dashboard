@@ -1,5 +1,2 @@
 fastapi
 python-multipart
-pandas
-numpy
-scikit-learn
