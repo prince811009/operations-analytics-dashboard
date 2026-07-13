@@ -1,22 +1,20 @@
 # Operations Analytics Platform
 
-A full-stack operations analytics platform built with Flutter, SQLite, SQL, Python, FastAPI, and machine-learning forecasting.
+A full-stack analytics platform built with **Flutter**, **FastAPI**, **SQLite**, and **Python**.
 
-The application transforms uploaded CSV data into interactive dashboards, SQL query results, forecasting insights, management reports, and downloadable PDF reports.
+The application allows users to upload CSV files, explore operational data, execute SQL queries, generate sales forecasts, and export management reports as PDF.
 
-## Overview
+---
 
-This project combines my professional experience in workflow digitization and reporting systems with my academic background in artificial intelligence and time-series forecasting.
+## Live Demo
 
-Users can:
+🌐 Frontend: https://your-frontend.vercel.app
 
-- Upload real CSV data
-- Review KPI dashboards and trend charts
-- Search, filter, sort, and export operational data
-- Run read-only SQL queries against SQLite
-- Generate forecasts through a Python FastAPI service
-- Review MAE, RMSE, projected growth, and recommendations
-- Export a management report as PDF
+🚀 API Docs: https://your-backend.vercel.app/docs
+
+❤️ API Health: https://your-backend.vercel.app/health
+
+---
 
 ## Screenshots
 
@@ -28,94 +26,158 @@ Users can:
 
 ![Data Explorer](screenshots/data-explorer.png)
 
-### SQL Query Explorer
+### SQL Query
 
-![SQL Query Explorer](screenshots/sql-query.png)
+![SQL Query](screenshots/sql-query.png)
 
-### Forecast Analytics
+### Forecast
 
-![Forecast Analytics](screenshots/forecast.png)
+![Forecast](screenshots/forecast.png)
 
-### Management Report
+### Report
 
-![Management Report](screenshots/report.png)
+![Report](screenshots/report.png)
 
-## Core Features
+---
 
-### Dashboard
+## Features
 
-- Responsive SaaS-style interface
-- Collapsible sidebar
-- Total records, total sales, average sales, and growth KPIs
-- Dynamic sales trend chart
-- Recent imported records
-- Data-driven operational recommendations
+- Upload and validate CSV files
+- Responsive analytics dashboard
+- Interactive KPI cards and sales trend chart
+- Data search, filtering, sorting, and CSV export
+- SQLite database integration
+- Read-only SQL query explorer
+- Python forecasting API with FastAPI
+- Forecast metrics (MAE & RMSE)
+- PDF management report export
+- Responsive sidebar
+- GitHub Actions CI
 
-### CSV Import
+---
 
-- Upload real CSV files
-- Validate required columns
-- Parse and normalize sales records
-- Update all application pages from shared imported data
+## Architecture
 
-Required CSV format:
+```text
+          CSV Upload
+               │
+               ▼
+        Flutter Web App
+               │
+     ┌─────────┼─────────┐
+     │         │         │
+     ▼         ▼         ▼
+ Dashboard  SQLite   Data Explorer
+     │         │
+     │         ▼
+     │    SQL Query
+     │
+     ▼
+ FastAPI Forecast API
+     │
+     ▼
+ Python Forecast Engine
+     │
+     ▼
+ Forecast & PDF Report
+```
+
+---
+
+## Tech Stack
+
+| Category | Technology |
+|----------|------------|
+| Frontend | Flutter, Dart |
+| Backend | FastAPI, Python |
+| Database | SQLite |
+| Charts | fl_chart |
+| File Upload | file_picker |
+| PDF | pdf, printing |
+| Deployment | Vercel |
+| CI | GitHub Actions |
+
+---
+
+## Project Structure
+
+```text
+lib/
+├── app/
+├── database/
+├── models/
+├── pages/
+├── services/
+├── theme/
+└── widgets/
+
+python/
+├── api.py
+└── forecast.py
+
+api/
+└── index.py
+
+assets/
+screenshots/
+test/
+```
+
+---
+
+## Run Locally
+
+### 1. Install Flutter dependencies
+
+```bash
+flutter pub get
+```
+
+### 2. Start the FastAPI server
+
+```bash
+source python/.venv/bin/activate
+uvicorn python.api:app --reload --host 127.0.0.1 --port 8000
+```
+
+### 3. Run Flutter Web
+
+```bash
+flutter run -d chrome
+```
+
+---
+
+## Sample CSV
 
 ```csv
 month,sales
 2025-01,120000
 2025-02,135000
 2025-03,128000
+2025-04,150000
+2025-05,160000
+```
 
-Data Explorer
-Search records by month
-Filter by minimum sales
-Sort by sales value
-Calculate filtered totals and averages
-Export filtered results to CSV
-SQLite and SQL Query Explorer
-Store imported records in SQLite
-Execute read-only SELECT queries
-Display dynamic query columns and results
-Provide reusable example queries
+---
 
-Example:
-SELECT month, sales
-FROM sales
-WHERE sales > 150000
-ORDER BY sales DESC;
+## Future Improvements
 
-Forecasting
-Flutter sends imported data to FastAPI
-Python processes the sales time series
-Scikit-learn generates a linear-regression baseline
-API returns forecast values and model metrics
-Flutter displays historical and forecast trends
-Includes MAE, RMSE, projected growth, and recommendations
-Management Report
-Total and average sales
-Best and worst performing periods
-Monthly growth calculations
-Management recommendations
-Downloadable PDF report
-Architecture
-CSV Upload
-    |
-    v
-Flutter Data Model
-    |
-    +----------------------+
-    |                      |
-    v                      v
-SQLite Database       Dashboard / Reports
-    |                      |
-    v                      v
-SQL Query Explorer    Data Explorer
-                           |
-                           v
-                    FastAPI Forecast API
-                           |
-                           v
-                 Python / Pandas / NumPy
-                           |
-                           v
-                Forecast Result + Metrics
+- User authentication
+- Docker deployment
+- Advanced forecasting models (LSTM)
+- Automated integration tests
+- Multi-dataset support
+- Role-based access control
+
+---
+
+## License
+
+This project is intended for portfolio and educational purposes.
+
+![Flutter](https://img.shields.io/badge/Flutter-3.x-blue?logo=flutter)
+![FastAPI](https://img.shields.io/badge/FastAPI-Backend-009688?logo=fastapi)
+![Python](https://img.shields.io/badge/Python-3.12-yellow?logo=python)
+![SQLite](https://img.shields.io/badge/SQLite-Database-003B57?logo=sqlite)
+![License](https://img.shields.io/badge/License-MIT-green)
