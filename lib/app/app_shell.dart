@@ -1,5 +1,6 @@
 import 'package:flutter/material.dart';
 
+import '../database/database_helper.dart';
 import '../models/sales_record.dart';
 import '../pages/dashboard/dashboard_page.dart';
 import '../pages/data_explorer/data_explorer_page.dart';
@@ -41,15 +42,23 @@ class _AppShellState extends State<AppShell> {
         return;
       }
 
+      await DatabaseHelper.instance.replaceSalesData(result.records);
+
+      if (!mounted) return;
+
       setState(() {
         salesData = result.records;
         importedFileName = result.fileName;
       });
     } on FormatException catch (error) {
+      if (!mounted) return;
+
       setState(() {
         importError = error.message;
       });
     } catch (error) {
+      if (!mounted) return;
+
       setState(() {
         importError = 'Import failed: $error';
       });
